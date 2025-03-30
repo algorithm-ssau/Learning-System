@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Модальные окна</title>
+</head>
+<body>
+
+  <button id="add-student-btn">Добавить ученика</button>
+  <button id="set-task-btn">Задать задание</button>
+  <button id="create-task-btn">Создать новое задание</button>
+
+    <div id="add-student-modal" class="modal">
+        <div class="modal-content">
+            <h2>Добавление ученика</h2>
+            <div class="row">
+                <label>ФИО:</label>
+                <input type="text" id="student-name" placeholder="Введите ФИО" required>
+            </div>
+            <div class="row">
+                <label>Задание:</label>
+                <select id="class-name" placeholder="Выберите задание" required>
+                    <option value="1">Задание 1</option>
+                    <option value="2">Задание 2</option>
+                    <option value="3">Задание 3</option>
+                </select>
+            </div>
+            <div class="row">
+                <label>Логин:</label>
+                <input type="text" id="student-login" placeholder="Введите логин" required>
+            </div>
+            <div class="row">
+                <label>Пароль:</label>
+                <input type="text" id="student-password" placeholder="Введите пароль" required>
+            </div>
+            <button>Добавить</button>
+            <button class="close-btn" onclick="closeModal('add-student-modal')">Закрыть</button>
+        </div>
+    </div>
+
+    <div id="set-task-modal" class="modal">
+        <div class="modal-content">
+            <h2>Выдача заданий</h2>
+            <div class="row">
+                <label>Задание:</label>
+                <select id="task-name" placeholder="Выберите задание" required>
+                    <option value="1">Задание 1</option>
+                    <option value="2">Задание 2</option>
+                    <option value="3">Задание 3</option>
+                </select>
+            </div>
+            <div class="row">
+                <label>Кому выдать:</label>
+                <select id="task-student" placeholder="Выберите учеников" required>
+                    <option value="all">Все ученики</option>
+                    <option value="1">Ученик 1</option>
+                    <option value="2">Ученик 2</option>
+                    <option value="3">Ученик 3</option>
+                </select>
+            </div>
+            <button>Выдать задание</button>
+            <button class="close-btn" onclick="closeModal('set-task-modal')">Закрыть</button>
+        </div>
+    </div>
+
+    <div id="create-task-modal" class="modal">
+        <div class="modal-content">
+            <h2>Создать новое поля</h2>
+            <div class="row">
+                <label>Ширина:</label>
+                <input type="number" id="width" min="10" max="20" placeholder="От 10 до 20" required>
+            </div>
+            <div class="row">
+                <label>Длина:</label>
+                <input type="number" id="length" min="10" max="20" placeholder="От 10 до 20" required>
+            </div>
+            <div class="row">
+                <label>Тип задания:</label>
+                <select id="task-type" required>
+                    <option value="collect-coins">Собрать монеты</option>
+                    <option value="place-stones">Поместить камни в лунки</option>
+                    <option value="dream-stones">Помечтить камни в лунки</option>
+                    <option value="collect-coins-and-place">Собрать монеты и поместить камни</option>
+                </select>
+            </div>
+            <div class="row">
+                <label>Выбор:</label>
+                <select id="task-choice" required>
+                    <option value="manual">Ручное</option>
+                    <option value="automatic">Автоматическое</option>
+                </select>
+            </div>
+            <div id="automatic-fields" style="display: none;">
+                <div class="row">
+                    <label>Количество камней (%):</label>
+                    <input type="number" id="stones-quantity" min="1" max="30" placeholder="От 1 до 30" required>
+                </div>
+                <div class="row">
+                    <label>Количество лунок (%):</label>
+                    <input type="number" id="holes-quantity" min="1" max="20" placeholder="От 1 до 20" required>
+                </div>
+                <div class="row">
+                    <label>Количество монет (%):</label>
+                    <input type="number" id="coins-quantity" min="1" max="10" placeholder="От 1 до 10" required>
+                </div>
+            </div>
+            <button>Продолжить</button>
+            <button class="close-btn" onclick="closeModal('create-task-modal')">Закрыть</button>
+        </div>
+    </div>
+
+<script>
+    document.getElementById('add-student-btn').addEventListener('click', function() {
+        document.getElementById('add-student-modal').style.display = 'flex';
+    });
+    document.getElementById('set-task-btn').addEventListener('click', function() {
+        document.getElementById('set-task-modal').style.display = 'flex';
+    });
+    document.getElementById('create-task-btn').addEventListener('click', function() {
+        document.getElementById('create-task-modal').style.display = 'flex';
+    });
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+    document.getElementById('task-choice').addEventListener('change', function() {
+        if (this.value === 'automatic') {
+        document.getElementById('automatic-fields').style.display = 'block';
+        } else {
+        document.getElementById('automatic-fields').style.display = 'none';
+        }
+    });
+</script>
+
+</body>
+</html>
+
+<style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .row {
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        margin-bottom: 10px;
+        justify-content: space-between;
+    }
+    label {
+        margin-right: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 10px;
+      cursor: pointer;
+      border-radius: 6px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+    }
+
+    /* Модальные окна */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 330px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #create-task-modal .modal-content {
+        width: 420px;
+    }
+
+    .modal-content h2 {
+      margin-top: 0;
+    }
+
+    .close-btn {
+      background-color: red;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      float: right;
+    }
+    select {
+      width: 220px;
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      font-size: 16px;
+      color: #333;
+      transition: all 0.3s ease;
+    }
+
+    select:focus {
+      border-color: #007bff;
+      background-color: #f7faff;
+      outline: none;
+    }
+
+    option {
+      padding: 5px;
+    }
+
+    input {
+      width: 200px;
+      padding: 5px 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #007bff;
+      background-color: #e7f1ff;
+      outline: none;
+    }
+
+    input::placeholder {
+      color: #888;
+    }
+  </style>
