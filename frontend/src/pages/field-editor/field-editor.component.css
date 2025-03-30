@@ -1,0 +1,49 @@
+.editor-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.back-button {
+    background-color: #ccc;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+.editor-layout {
+    display: grid;
+    grid-template-columns: 1fr 3fr; /* Левый столбец узкий, правый широкий */
+    gap: 20px;
+    height: 65vh;
+    align-items: start;
+}
+.energy-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.grid-container {
+    display: grid;
+    justify-content: center;
+    align-content: center;
+}
+.elements-panel {
+    display: flex;
+    flex-direction: column; /* Размещаем элементы вертикально */
+    gap: 15px; /* Отступ между элементами */
+    align-items: center;
+}
+.element {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: grab;
+} 
+.element img {
+    width: 60px; /* Подогнать размер */
+    height: 60px;
+}
+.element span {
+    font-size: 18px; /* Увеличенный размер текста */
+    font-weight: bold;
+  }

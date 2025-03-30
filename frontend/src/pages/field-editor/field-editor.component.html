@@ -1,0 +1,50 @@
+<div class="editor-container">
+    <button class="back-button" (click)="goToJournal()">&#x2190; Вернуться к журналу</button>
+    
+    <form [formGroup]="editorForm" (ngSubmit)="saveTask()">
+        <label>Текст задания:</label>
+        <textarea formControlName="taskText"></textarea>
+        <div *ngIf="editorForm.get('taskText')?.invalid && editorForm.get('taskText')?.touched">
+            Текст задания должен содержать минимум 10 символов.
+        </div>
+
+        <div class="editor-layout">
+            <!-- Левый столбец -->
+            <div class="energy-panel">
+                <div class="elements-panel">
+                    <div class="element" *ngFor="let element of gameElements" 
+                        [draggable]="element.count < element.max" 
+                        (dragstart)="onDragStart($event, element.name)">
+                        <img [src]="element.image" />
+                        <span>{{ element.count }}/{{ element.max }}</span>
+                    </div>
+                    <div class="element">
+                        <label>Энергия:</label>
+                        <img src="assets/energy.png">
+                        <input type="number" formControlName="energy" />
+                        <div *ngIf="editorForm.get('energy')?.invalid && editorForm.get('energy')?.touched">
+                            Введите число от 1 до 100.
+                        </div>
+                    </div>
+                </div>
+            </div>
+      
+            <!-- Правый столбец -->
+            <div class="grid-container" [ngStyle]="gridStyle">
+                <div class="grid" *ngFor="let cell of gameField; let i = index" 
+                    (dragover)="allowDrop($event)" 
+                    (drop)="onDrop($event, i)">
+                    <img *ngIf="cell !== -1" [src]="getElementImage(cell)" [ngStyle]="getElementStyle()"/>
+                </div>
+            </div>
+        </div>
+
+        <label>Укажите название задания:</label>
+        <input type="text" formControlName="taskName" />
+        <div *ngIf="editorForm.get('taskName')?.invalid && editorForm.get('taskName')?.touched">
+            Название задания обязательно (максимум 50 символов).
+        </div>
+  
+        <button type="submit" [disabled]="editorForm.invalid">Сохранить задание</button>
+    </form>
+  </div>
