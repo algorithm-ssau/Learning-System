@@ -1,0 +1,59 @@
+<div class="container">
+    <!-- Левая колонка -->
+    <div class="left-panel">
+      <button class="back-button" (click)="goToJournal()">
+        &#x2190;Вернуться к журналу
+      </button>
+      <h3>Команды</h3>
+      <div class="commands">
+        <div class="command" draggable="true" (dragstart)="dragCommand('вверх')">↑ Вверх</div>
+        <div class="command" draggable="true" (dragstart)="dragCommand('вниз')">↓ Вниз</div>
+        <div class="command" draggable="true" (dragstart)="dragCommand('вправо')">→ Вправо</div>
+        <div class="command" draggable="true" (dragstart)="dragCommand('влево')">← Влево</div>
+        <div class="command cycle" draggable="true" (dragstart)="dragCommand('цикл')">⭮ Цикл</div>
+      </div>
+  
+      <h3>Справка</h3>
+      <p>Перетаскивайте команды в поле алгоритма для их добавления.</p>
+    </div>
+  
+    <!-- Средняя колонка (Поле алгоритма) -->
+    <div class="middle-panel">
+      <h3>Алгоритм ⚡ ({{ commands.length }}/{{ maxCommands }})</h3>
+      <form [formGroup]="algorithmForm">
+        <div formArrayName="commands" class="algorithm">
+          <div *ngFor="let command of commands.controls; let i = index" [formGroupName]="i"
+               class="command-block"
+               (drop)="dropCommand(i)"
+               (dragover)="$event.preventDefault()">
+            
+            <span *ngIf="command.get('type')?.value !== 'loop'">{{ command.get('text')?.value }}</span>
+            
+            <div *ngIf="command.get('type')?.value === 'loop'">
+              <label>Цикл:</label>
+              <input type="number" formControlName="iterations" min="2" max="10">
+            </div>
+          </div>
+        </div>
+      </form>
+  
+      <button class="submit-button" (click)="submitSolution()">Отправить решение на проверку</button>
+    </div>
+  
+    <!-- Правая колонка -->
+    <div class="right-panel">
+      <h3>Задание</h3>
+      <p>{{ taskDescription }}</p>
+  
+      <h3>Игровое поле</h3>
+      <div class="game-grid">
+        <!-- Здесь будет отображаться игровое поле -->
+      </div>
+  
+      <h3>Консоль</h3>
+      <button (click)="runSolution()">▶ Play</button>
+      <div class="console">
+        <p *ngFor="let message of consoleMessages">{{ message }}</p>
+      </div>
+    </div>
+  </div>

@@ -9,11 +9,13 @@ import { GameStateService } from 'src/services/game-state.service';
 import { AppComponent } from './app.component';
 import { FieldEditorComponent } from 'src/pages/field-editor/field-editor.component';
 import { TaskViewComponent } from 'src/pages/task-view/task-view.component';
+import { TaskSolveComponent } from 'src/pages/task-solve/task-solve.component';
 
 const roots: Routes = [
   {path: '', component: AppComponent}, // Заменить авторизацией
   {path: 'editor', component: FieldEditorComponent},
   {path: 'view', component: TaskViewComponent},
+  {path: 'solve', component: TaskSolveComponent},
   {path: '**', component: AppComponent}
 ]
 
@@ -21,7 +23,8 @@ const roots: Routes = [
   declarations: [
     AppComponent,
     FieldEditorComponent,
-    TaskViewComponent
+    TaskViewComponent,
+    TaskSolveComponent
   ],
   imports: [
     BrowserModule,
