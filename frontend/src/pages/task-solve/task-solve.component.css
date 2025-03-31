@@ -1,0 +1,67 @@
+.container {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .left-panel, .middle-panel, .right-panel {
+    border: 1px solid #ccc;
+    padding: 10px;
+    background: #f9f9f9;
+  }
+  
+  .left-panel {
+    width: 20%;
+  }
+  
+  .middle-panel {
+    width: 40%;
+  }
+  
+  .right-panel {
+    width: 40%;
+  }
+  
+  .commands {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .command {
+    padding: 5px;
+    border: 1px solid #000;
+    cursor: grab;
+  }
+  
+  .cycle {
+    background: lightyellow;
+  }
+  
+  .algorithm {
+    border: 2px dashed #aaa;
+    padding: 10px;
+    min-height: 100px;
+  }
+  
+  .command-block {
+    padding: 5px;
+    border: 1px solid #000;
+    margin: 3px;
+  }
+  
+  .submit-button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background: green;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .console {
+    background: black;
+    color: lime;
+    padding: 5px;
+    height: 100px;
+    overflow-y: auto;
+  }
