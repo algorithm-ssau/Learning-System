@@ -1,0 +1,98 @@
+.evaluation-container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+  }
+  
+  .column {
+    width: 50%;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .left-column {
+    border-right: 1px solid #ccc;
+  }
+  
+  .back-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .algorithm-section, .rating-section {
+    margin-top: 20px;
+  }
+  
+  .flowchart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .block {
+    width: 150px;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .start, .end {
+    background-color: #d4edda;
+    border: 2px solid #28a745;
+  }
+  
+  .move {
+    background-color: #cce5ff;
+    border: 2px solid #007bff;
+  }
+  
+  .loop {
+    background-color: #fff3cd;
+    border: 2px solid #ffc107;
+    position: relative;
+  }
+  
+  .loop-content {
+    padding-left: 20px;
+    border-left: 2px solid #ffc107;
+    margin-left: 10px;
+  }
+  
+  .rating-section select {
+    margin-right: 10px;
+  }
+  
+  .game-field {
+    display: grid;
+    grid-template-columns: repeat(10, 40px);
+    grid-template-rows: repeat(10, 40px);
+    gap: 2px;
+    border: 2px solid black;
+    padding: 10px;
+  }
+  
+  .cell {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .execution-section {
+    margin-top: 20px;
+  }
+  
+  .console {
+    border: 1px solid #000;
+    height: 100px;
+    overflow-y: auto;
+    padding: 10px;
+  }

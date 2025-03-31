@@ -1,0 +1,59 @@
+<div class="evaluation-container">
+    <!-- Левая колонка -->
+    <div class="column left-column">
+      <button class="back-button" (click)="goToJournal()">
+        &#x2190;Вернуться к журналу
+      </button>
+  
+      <div class="algorithm-section">
+        <h3>Алгоритм <img src="assets/energy.png" alt="Energy"></h3>
+        <p>{{ commandCount }} / {{ commandLimit }}</p>
+        <div class="flowchart">
+          <div class="block start">Начало</div>
+          <ng-container *ngFor="let command of parsedAlgorithm">
+            <div *ngIf="command.type === 'move'" class="block move">{{ command.text }}</div>
+            <div *ngIf="command.type === 'loop'" class="block loop">
+              {{ command.text }}
+              <div class="loop-content">
+                <ng-container *ngFor="let subcommand of command.commands">
+                  <div class="block move">{{ subcommand }}</div>
+                </ng-container>
+              </div>
+            </div>
+          </ng-container>
+          <div class="block end">Конец</div>
+        </div>
+      </div>
+  
+      <div class="rating-section">
+        <form [formGroup]="ratingForm">
+          <label for="rating">Оценка:</label>
+          <select id="rating" formControlName="selectedRating">
+            <option *ngFor="let rating of ratings" [value]="rating">{{ rating }}</option>
+          </select>
+          <button type="button" (click)="submitRating()">Выставить оценку</button>
+        </form>
+      </div>
+    </div>
+  
+    <!-- Правая колонка -->
+    <div class="column right-column">
+      <h3>Задание</h3>
+      <p>{{ taskText }}</p>
+  
+      <div class="game-field">
+        <div *ngFor="let row of gameGrid; let rowIndex = index">
+          <div *ngFor="let cell of row; let colIndex = index" class="cell">
+            {{ cell }}
+          </div>
+        </div>
+      </div>
+  
+      <div class="execution-section">
+        <button class="play-button" (click)="executeAlgorithm()">▶</button>
+        <div class="console">
+          <p *ngFor="let log of executionLogs">{{ log }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
