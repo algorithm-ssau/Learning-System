@@ -1,0 +1,82 @@
+<div class="container">
+  <!-- Левая колонка: меню классов -->
+  <div class="left-panel">
+    <div [formGroup]="classesForm" class="form-wrapper">
+      <div formArrayName="classes" class="classes">
+        <div *ngFor="let classGroup of classes.controls; let i = index" 
+            [formGroupName]="i" 
+            class="class-entry">
+            <div class="class-name">
+              {{ classGroup.get('className')?.value }}
+            </div>
+            <div class="student-count">
+              учеников: {{ classGroup.get('studentCount')?.value }}
+            </div>
+        </div>
+      </div>
+      <div class="control-panel">
+        <input 
+          type="text" 
+          placeholder="Введите имя класса" 
+          class="class-input"
+          [(ngModel)]="newClassName"
+          [ngModelOptions]="{standalone: true}">
+
+        <button class="add-button" (click)="addClass()">
+          Добавить класс +
+        </button>
+        
+        <button class="rating-button" (click)="goToRating()">
+          Посмотреть рейтинг
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Центральная часть страницы: ученики и их дз -->
+  <div class="middle-panel">
+    <div [formGroup]="studentsForm" class="form-wrapper">
+      <div formArrayName="students" class="students">
+        <div *ngFor="let student of students.controls; let i = index"
+        [formGroupName]="i"
+        class="student">
+          <div class="student-name">
+            {{student.get('studentName')?.value}}
+          </div>
+          <div formArrayName="studentTasks" class="tasks">
+            <div *ngFor="let taskControl of getStudentTasks(student).controls; let j = index"
+                 class="student-tasks">
+              <div class="task">
+                <div class="task-name">{{ taskControl.value[0] }}</div>
+                <div class="task-grade">{{ taskControl.value[1] }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Боковая правая панель: добавление заданий и справки -->
+  <div class="right-panel">
+    <div class="add-student-button">
+      Добавить ученика +
+    </div>
+    <div class="burger-container">
+      <button class="burger-button">
+        Задание
+        <div class="burger-icon">
+          <div class="burger-line"></div>
+          <div class="burger-line"></div>
+          <div class="burger-line"></div>
+        </div>
+      </button>
+      <div class="burger-menu">
+        <button (click)="someAction()">Действие 1</button>
+        <button (click)="someAction()">Действие 2</button>
+        <button (click)="someAction()">Действие 3</button>
+      </div>
+    </div>
+    <button class="system-info-button">Посмотреть справку о системе</button>
+    <button class="developer-info-button">Посмотреть справку о разработчиках</button>
+    <button class="quit-button">Выход</button>
+  </div>
+</div>
