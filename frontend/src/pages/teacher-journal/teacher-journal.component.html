@@ -47,7 +47,15 @@
                  class="student-tasks">
               <div class="task">
                 <div class="task-name">{{ taskControl.value[0] }}</div>
-                <div class="task-grade">{{ taskControl.value[1] }}</div>
+                <div class="task-grade" 
+                  [class.unsolved]="taskControl.value[1] === 0"
+                  [class.solved]="taskControl.value[1] === 1"
+                  [class.grade-2]="taskControl.value[1] === 2"
+                  [class.grade-3]="taskControl.value[1] === 3"
+                  [class.grade-4]="taskControl.value[1] === 4"
+                  [class.grade-5]="taskControl.value[1] === 5">
+                {{ taskControl.value[1] > 1 ? taskControl.value[1] : '' }}
+                </div>
               </div>
             </div>
           </div>
@@ -70,13 +78,13 @@
         </div>
       </button>
       <div class="burger-menu">
-        <button (click)="someAction()">Действие 1</button>
-        <button (click)="someAction()">Действие 2</button>
-        <button (click)="someAction()">Действие 3</button>
+        <button (click)="someAction()">Выдать задание</button>
+        <button (click)="someAction()">Создать новое задание +</button>
+        <button (click)="someAction()">Посмотреть существующие задания</button>
       </div>
     </div>
-    <button class="system-info-button">Посмотреть справку о системе</button>
-    <button class="developer-info-button">Посмотреть справку о разработчиках</button>
-    <button class="quit-button">Выход</button>
+    <button class="system-info-button" (click)="goToSystemInfo()">Посмотреть справку о системе</button>
+    <button class="developer-info-button" (click)="goToDeveloperInfo()">Посмотреть справку о разработчиках</button>
+    <button class="quit-button" (click)="Exit()">Выход</button>
   </div>
 </div>

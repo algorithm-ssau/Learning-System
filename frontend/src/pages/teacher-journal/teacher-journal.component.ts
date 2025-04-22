@@ -184,6 +184,15 @@ export class TeacherJournalComponent implements OnInit{
   goToRating(): void {
     this.router.navigate(['/rating']);
   }
+  goToSystemInfo(): void {
+    this.router.navigate(['/systeminfo']);
+  }
+  goToDeveloperInfo(): void {
+    this.router.navigate(['/developerinfo'])
+  }
+  Exit(): void {
+    this.router.navigate([''])
+  }
   // Submit the form
   onSubmit(): void {
     if (this.classesForm.valid) {
