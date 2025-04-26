@@ -65,9 +65,9 @@
   </div>
   <!-- Боковая правая панель: добавление заданий и справки -->
   <div class="right-panel">
-    <div class="add-student-button">
+    <button (click)="openAddStudent()" class="add-student-button">
       Добавить ученика +
-    </div>
+    </button>
     <div class="burger-container">
       <button class="burger-button">
         Задание
@@ -78,9 +78,9 @@
         </div>
       </button>
       <div class="burger-menu">
-        <button (click)="someAction()">Выдать задание</button>
-        <button (click)="someAction()">Создать новое задание +</button>
-        <button (click)="someAction()">Посмотреть существующие задания</button>
+        <button (click)="openGiveTask()" class="give-task-button">Выдать задание</button>
+        <button (click)="openAddTask()" class="add-task-button">Создать новое задание +</button>
+        <button (click)="openViewTasks()" class="view-tasks-button">Посмотреть существующие задания</button>
       </div>
     </div>
     <button class="system-info-button" (click)="goToSystemInfo()">Посмотреть справку о системе</button>

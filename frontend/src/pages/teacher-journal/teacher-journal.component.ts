@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EvaluationService } from 'src/services/evaluation.service';
+import { DialogService } from 'src/services/dialog.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, AbstractControl, Validators } from '@angular/forms';
 @Component({
@@ -15,7 +16,8 @@ export class TeacherJournalComponent implements OnInit{
   constructor(
     private fb: FormBuilder, 
     private evaluationService: EvaluationService,
-    private router: Router
+    private router: Router,
+    private dialogService: DialogService,
     ) {
     this.classesForm = this.fb.group({
       classes: this.fb.array([
@@ -193,13 +195,27 @@ export class TeacherJournalComponent implements OnInit{
   Exit(): void {
     this.router.navigate([''])
   }
-  // Submit the form
   onSubmit(): void {
     if (this.classesForm.valid) {
       console.log('Form submitted:', this.classesForm.value);
-      // Here you would typically send data to a service
     } else {
       console.log('Form is invalid');
     }
+  }
+
+  openAddStudent() {
+    this.dialogService.openAddStudentDialog();
+  }
+
+  openGiveTask() {
+    this.dialogService.openGiveTaskDialog();
+  }
+
+  openAddTask() {
+    this.dialogService.openAddTaskDialog();
+  }
+
+  openViewTasks() {
+    this.dialogService.openViewTaskDialog();
   }
 }

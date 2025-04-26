@@ -1,0 +1,65 @@
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 330px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  #create-task-modal .modal-content {
+      width: 420px;
+  }
+
+  .modal-content h2 {
+    margin-top: 0;
+  }
+
+  .close-btn {
+    background-color: red;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    float: right;
+  }
+  select {
+    width: 220px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    color: #333;
+    transition: all 0.3s ease;
+  }
+
+  select:focus {
+    border-color: #007bff;
+    background-color: #f7faff;
+    outline: none;
+  }
+
+  option {
+    padding: 5px;
+  }
+
+  input {
+    width: 200px;
+    padding: 5px 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+  }
+
+  input:focus {
+    border-color: #007bff;
+    background-color: #e7f1ff;
+    outline: none;
+  }
+
+  input::placeholder {
+    color: #888;
+  }
