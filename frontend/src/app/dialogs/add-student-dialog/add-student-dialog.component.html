@@ -1,0 +1,21 @@
+<div id="add-student-modal" class="modal">
+    <div class="modal-content">
+        <h2>Добавление ученика</h2>
+        <form (ngSubmit)="onAdd()" #studentForm="ngForm">
+            <div class="row">
+                <label>ФИО:</label>
+                <input type="text" [(ngModel)]="studentData.name" id="student-name" placeholder="Введите ФИО" required>
+            </div>
+            <div class="row">
+                <label>Логин:</label>
+                <input type="text" [(ngModel)]="studentData.login" id="student-login" placeholder="Введите логин" required>
+            </div>
+            <div class="row">
+                <label>Пароль:</label>
+                <input type="text" [(ngModel)]="studentData.password" id="student-password" placeholder="Введите пароль" required>
+            </div>
+            <button (click)="onAdd()">Добавить</button>
+            <button class="close-btn" (click)="onCancel()">Закрыть</button>
+        </form>
+    </div>
+</div>

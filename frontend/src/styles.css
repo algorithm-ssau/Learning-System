@@ -1,1 +1,53 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.centered-dialog.cdk-overlay-pane {
+    transform: none !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    translate: -50% -50% !important;
+  }
+  
+  .centered-dialog .mat-dialog-container {
+    width: 100%;
+    height: 100%;
+    display: flex !important;
+    flex-direction: column;
+  }
+.centered-dialog .mat-dialog-content {
+    margin: 0 !important;
+    padding: 24px !important;
+  }
+
+.cdk-overlay-container {
+    position: fixed;
+    top: 50vh;
+    left: 50vh;
+  }
+
+  .dialog-backdrop {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 1000 !important;
+  }
+  
+  .cdk-overlay-container {
+    pointer-events: none !important;
+  }
+  
+  .cdk-overlay-backdrop {
+    pointer-events: auto !important;
+    z-index: 1000 !important;
+  }
+  
+  .cdk-overlay-pane {
+    pointer-events: auto !important;
+    z-index: 1001 !important;
+  }

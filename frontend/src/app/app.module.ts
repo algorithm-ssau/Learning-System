@@ -4,6 +4,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { PortalModule } from '@angular/cdk/portal';
 import { AppRoutingModule } from './app-routing.module';
 import { RouterModule, Routes } from '@angular/router';
 import { GameStateService } from 'src/services/game-state.service';
@@ -12,6 +18,11 @@ import { FieldEditorComponent } from 'src/pages/field-editor/field-editor.compon
 import { TaskViewComponent } from 'src/pages/task-view/task-view.component';
 import { TaskSolveComponent } from 'src/pages/task-solve/task-solve.component';
 import { TeacherJournalComponent } from '../pages/teacher-journal/teacher-journal.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AddStudentDialogComponent } from './dialogs/add-student-dialog/add-student-dialog.component';
+import { GiveTaskDialogComponent } from './dialogs/give-task-dialog/give-task-dialog.component';
+import { AddTaskDialogComponent } from './dialogs/add-task-dialog/add-task-dialog.component';
+import { ViewTasksDialogComponent } from './dialogs/view-tasks-dialog/view-tasks-dialog.component';
 
 const roots: Routes = [
   {path: '', component: AppComponent}, // Заменить авторизацией
@@ -28,16 +39,25 @@ const roots: Routes = [
     FieldEditorComponent,
     TaskViewComponent,
     TaskSolveComponent,
-    TeacherJournalComponent
+    TeacherJournalComponent,
+    AddStudentDialogComponent,
+    GiveTaskDialogComponent,
+    AddTaskDialogComponent,
+    ViewTasksDialogComponent,
   ],
   imports: [
     BrowserModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    OverlayModule,
     RouterModule.forRoot(roots),
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
     CommonModule, 
-    FormsModule
+    FormsModule, BrowserAnimationsModule
   ],
   providers: [
     GameStateService
