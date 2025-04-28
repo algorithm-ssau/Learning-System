@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { ApiService } from 'src/services/api.service';
 
 @Component({
   selector: 'app-add-student-dialog',
@@ -13,7 +14,7 @@ export class AddStudentDialogComponent {
     password: '',
   }
 
-  constructor(private dialogRef: MatDialogRef<AddStudentDialogComponent>) {}
+  constructor(private dialogRef: MatDialogRef<AddStudentDialogComponent>, private apiService: ApiService) {}
 
   onCancel(): void {
     this.dialogRef.close();

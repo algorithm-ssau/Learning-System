@@ -5,7 +5,9 @@
       <div formArrayName="classes" class="classes">
         <div *ngFor="let classGroup of classes.controls; let i = index" 
             [formGroupName]="i" 
-            class="class-entry">
+            class="class-entry"
+            [class.selected]="isClassSelected(i)"
+            (click)="selectClass(classGroup.get('className')?.value, i)">
             <div class="class-name">
               {{ classGroup.get('className')?.value }}
             </div>
@@ -46,15 +48,15 @@
             <div *ngFor="let taskControl of getStudentTasks(student).controls; let j = index"
                  class="student-tasks">
               <div class="task">
-                <div class="task-name">{{ taskControl.value[0] }}</div>
+                <div class="task-name">{{ taskControl.value.task_name }}</div>
                 <div class="task-grade" 
-                  [class.unsolved]="taskControl.value[1] === 0"
-                  [class.solved]="taskControl.value[1] === 1"
-                  [class.grade-2]="taskControl.value[1] === 2"
-                  [class.grade-3]="taskControl.value[1] === 3"
-                  [class.grade-4]="taskControl.value[1] === 4"
-                  [class.grade-5]="taskControl.value[1] === 5">
-                {{ taskControl.value[1] > 1 ? taskControl.value[1] : '' }}
+                  [class.unsolved]="taskControl.value.task_mark === 0"
+                  [class.solved]="taskControl.value.task_mark === -1"
+                  [class.grade-2]="taskControl.value.task_mark === 2"
+                  [class.grade-3]="taskControl.value.task_mark === 3"
+                  [class.grade-4]="taskControl.value.task_mark === 4"
+                  [class.grade-5]="taskControl.value.task_mark === 5">
+                  {{ taskControl.value.task_mark > 1 ? taskControl.value.task_mark : '' }}
                 </div>
               </div>
             </div>

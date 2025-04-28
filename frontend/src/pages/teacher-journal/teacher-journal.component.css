@@ -6,11 +6,15 @@
 
 .left-panel {
   justify-content: center;
+  padding: 10px;
   width: 15%;
   height: 90vh;
   margin-top: 5vh;
   display: flex;
   flex-direction: column;
+  background-color: #c8c8c8;
+  border: 1px solid #000000;
+  border-radius: 12px;
 }
 .middle-panel {
   width: 65%;
@@ -29,6 +33,9 @@
   flex-direction: column;
   scrollbar-width: thin;
   gap: 10px;
+  background-color: #c8c8c8;
+  border: 2px solid #000000;
+  border-radius: 14px;
 }
 .student {
   min-width: 150px;
@@ -40,18 +47,25 @@
   border-radius: 12px;
 }
 .student-name {
-  min-height: 40px;
+  text-align: center;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  word-break: break-word;
+  height: 60px;
   margin-bottom: 20px;
   font-weight: 550;
-  font-size: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 1px solid #000000;
   border-radius: 12px;
+  font-size: 12px;
   box-sizing: border-box;
   background-color: #FFD3D3;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 10px;
 }
 .student-tasks {
   display: flex;
@@ -151,6 +165,16 @@
   align-items: center;
   background-color: #CCEBFF;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.class-entry:hover {
+  background-color: #f0f0f0;
+}
+
+.class-entry.selected {
+  background-color: #e8f5e9;
+  border-left: 3px solid #4caf50;
+  font-weight: 500;
 }
 
 .class-name {
