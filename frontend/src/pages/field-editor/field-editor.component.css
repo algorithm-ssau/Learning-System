@@ -1,49 +1,151 @@
 .editor-container {
+    padding: 20px;
+}
+  
+.editor-layout {
+    display: grid;
+    grid-template-columns: 1fr 3fr; /* Левая узкая, правая широкая */
+    gap: 30px;
+    align-items: start;
+}
+
+.left-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+.back-button, .save-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.delete-button {
+    padding: 10px 20px;
+    background-color: #f8d7da; /* светло-красный фон */
+    border: 1px solid #f5c2c7;
+    color: #842029; /* темно-красный текст */
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+.delete-button:hover {
+    background-color: #f1b0b7; /* немного ярче при наведении */
+}
+
+.elements-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.element img {
+    width: 60px;
+    height: 60px;
+}
+
+.element span {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.energy-input {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 5px;
 }
-.back-button {
-    background-color: #ccc;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-}
-.editor-layout {
-    display: grid;
-    grid-template-columns: 1fr 3fr; /* Левый столбец узкий, правый широкий */
-    gap: 20px;
-    height: 65vh;
-    align-items: start;
-}
-.energy-panel {
+
+.right-panel {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
+    padding-right: 30px; /* отступ от правого края */
 }
+
+.task-text textarea {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #e6f7ff; /* светло-голубой фон */
+    border: 2px solid #91d5ff; /* тонкая синяя рамка */
+    border-radius: 12px; /* скругление краёв */
+    resize: vertical;
+    outline: none;
+    box-sizing: border-box;
+  }
+  
+.task-text textarea:focus {
+    background-color: #d0ebff; /* чуть ярче при фокусе */
+}
+
+.task-name input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 5px solid #ccc; /* серая обводка */
+    border-radius: 12px; /* скруглённые края */
+    outline: none;
+    box-sizing: border-box;
+}
+  
+.task-name input:focus {
+    border-color: #999; /* темнее при фокусе */
+}
+
 .grid-container {
     display: grid;
     justify-content: center;
     align-content: center;
 }
-.elements-panel {
+
+.grid {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ccc;
     display: flex;
-    flex-direction: column; /* Размещаем элементы вертикально */
-    gap: 15px; /* Отступ между элементами */
+    justify-content: center;
     align-items: center;
+    background-color: #f5f5f5;
 }
-.element {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    cursor: grab;
-} 
-.element img {
-    width: 60px; /* Подогнать размер */
-    height: 60px;
+
+.error {
+    color: red;
+    font-size: 14px;
 }
-.element span {
-    font-size: 18px; /* Увеличенный размер текста */
-    font-weight: bold;
+
+/* Картинки в панели элементов (слева) */
+.panel-img {
+    width: 80px;
+    height: 80px;
+}
+
+/* Картинки в игровом поле (справа) */
+.field-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.energy-icon {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.elements-panel img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+}
+
+.element.disabled img {
+    opacity: 0.4;
+    pointer-events: none;
   }
