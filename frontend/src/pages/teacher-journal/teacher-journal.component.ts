@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EvaluationService } from 'src/services/evaluation.service';
 import { DialogService } from 'src/services/dialog.service';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, AbstractControl, Validators } from '@angular/forms';
 import { ApiService } from 'src/services/api.service';
@@ -19,9 +20,10 @@ export class TeacherJournalComponent implements OnInit{
   newClassName: string = '';
   studentsData: any[] = [];
   classesData: any[] = [];
+  tasksData: any[] = [];
   constructor(
     private fb: FormBuilder, 
-    private evaluationService: EvaluationService,
+
     private router: Router,
     private dialogService: DialogService,
     private apiService: ApiService,
@@ -37,6 +39,7 @@ export class TeacherJournalComponent implements OnInit{
     await this.loadClasses();
     await this.loadStudents();
     await this.loadAllStudentsTasks();
+    await this.loadAllTasks();
     this.showClasses();
     const classesArray = this.classesForm.get('classes') as FormArray;
     this.selectedClass = classesArray.length > 0 
@@ -55,14 +58,15 @@ export class TeacherJournalComponent implements OnInit{
       studentCount: [studentCount, [Validators.required, Validators.min(1), Validators.max(50)]]
     });
   }
+
   private createStudent(studentName: string, studentTasks: { task_name: string; task_mark: number }[]): FormGroup {
     return this.fb.group({
       studentName: [studentName, [Validators.required, Validators.maxLength(20)]],
       studentTasks: this.fb.array(
         studentTasks.map(task => 
           this.fb.group({
-            task_name: [task.task_name, Validators.required],
-            task_mark: [task.task_mark, [Validators.required, Validators.min(0), Validators.max(5)]]
+            taskName: [task.task_name, Validators.required],
+            taskMark: [task.task_mark, [Validators.required, Validators.min(0), Validators.max(5)]]
           })
         ),
         [Validators.required]
@@ -71,6 +75,9 @@ export class TeacherJournalComponent implements OnInit{
   }
 
   showClasses(){
+    this.classesForm = this.fb.group({
+      classes: this.fb.array([])
+    });
     const classes = this.classesForm.get('classes') as FormArray
     for (const student_class of this.classesData){
       classes.push(this.createClass(student_class[0], student_class[1]))
@@ -143,11 +150,78 @@ export class TeacherJournalComponent implements OnInit{
   }
 
   openAddStudent() {
-    this.dialogService.openAddStudentDialog();
+    const dialogRef = this.dialogService.openAddStudentDialog();
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const students = this.studentsForm.get('students') as FormArray;
+        students.push(this.createStudent(result.name, []))
+        this.studentsData.push([result.login, result.name, [], this.selectedClass])
+        this.increaseClassStudentCount(this.selectedClass);
+        const student = {
+          login: result.login, 
+          name: result.name.split(" ")[0], 
+          surname: result.name.split(" ")[1], 
+          patronymic: result.name.split(" ")[2], 
+          class_name: this.selectedClass,
+          password: result.password,
+        }
+        const response = lastValueFrom(
+          this.apiService.postStudent(student).pipe(
+            timeout(5000),
+            catchError(error => {
+              console.error('Couldn\'t post student', error);
+              return of([]);
+            })
+          )
+        )
+        console.log('Added student: ', result);
+      }
+    })
+  }
+
+  private increaseClassStudentCount(className: string): void {
+    const classesArray = this.classesForm.get('classes') as FormArray;
+    
+    for (let i = 0; i < classesArray.length; i++) {
+      const classGroup = classesArray.at(i) as FormGroup;
+      if (classGroup.get('className')?.value === className) {
+        const currentCount = classGroup.get('studentCount')?.value || 0;
+        classGroup.get('studentCount')?.setValue(currentCount + 1);
+        break;
+      }
+    }
   }
 
   openGiveTask() {
-    this.dialogService.openGiveTaskDialog();
+    const dialogRef = this.dialogService.openGiveTaskDialog({
+      selectedClass: this.selectedClass,
+      tasksData: this.tasksData,
+      studentsData: this.studentsData.filter(s => s[3] === this.selectedClass)
+    })
+    
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        let taskData = {taskName: '', taskMark: -1};
+        for (const task of this.tasksData) {
+          if (task.id_task == +result.taskId) {
+            taskData = {taskName: task.name, taskMark: -1}
+          }
+        }
+        const students = this.studentsForm.get('students') as FormArray;
+        if (result.studentId == 'all'){
+          for (let i = 0; i < students.length; i++) {
+            const studentGroup = students.at(i) as FormGroup;
+            if (studentGroup){
+              const studentTasksArray = studentGroup.get('studentTasks') as FormArray;
+              studentTasksArray.push(this.fb.group({
+                taskName: [taskData.taskName, Validators.required],
+                taskMark: [taskData.taskMark, [Validators.required, Validators.min(0), Validators.max(5)]]
+              }))
+            }
+          }
+        }
+      }
+    })
   }
 
   openAddTask() {
@@ -205,6 +279,19 @@ export class TeacherJournalComponent implements OnInit{
     }
   }
   
+  async loadAllTasks(): Promise<void> {
+    try {
+    const tasks = await lastValueFrom(
+      this.apiService.getAllTasks().pipe(
+        timeout(5000),
+      ))
+    this.tasksData = tasks;
+    console.log('All tasks loaded:', this.tasksData);
+    } catch (error) {
+      console.error(`Critical error when loading all tasks:`, error);
+    }
+  }
+
   async loadAllStudentsTasks(): Promise<void> {
     console.log('Starting task load', this.studentsData);
     
@@ -216,8 +303,6 @@ export class TeacherJournalComponent implements OnInit{
     try {
       for (const student of this.studentsData) {
         const login = student[0];
-        console.log('Processing:', login);
-        
         try {
           const tasks = await lastValueFrom(
             this.apiService.getStudentTasks(login).pipe(
@@ -230,7 +315,6 @@ export class TeacherJournalComponent implements OnInit{
           );
           
           student[2] = tasks;
-          console.log(`Loaded ${tasks.length} tasks for ${login}`);
         } catch (error) {
           student[2] = [];
           console.error(`Critical error for ${login}:`, error);

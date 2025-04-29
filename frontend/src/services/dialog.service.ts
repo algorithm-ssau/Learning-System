@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AddStudentDialogComponent } from '../app/dialogs/add-student-dialog/add-student-dialog.component'
 import { GiveTaskDialogComponent } from '../app/dialogs/give-task-dialog/give-task-dialog.component';
 import { AddTaskDialogComponent } from '../app/dialogs/add-task-dialog/add-task-dialog.component';
@@ -14,17 +14,19 @@ export class DialogService {
     openAddStudentDialog() {
         return this.dialog.open(AddStudentDialogComponent, {
           hasBackdrop: true,
-          disableClose: true,
+          disableClose: false,
           autoFocus: false,
           backdropClass: 'dialog-backdrop',
           panelClass: 'centered-dialog',
         });
       }
 
-    openGiveTaskDialog() {
+    openGiveTaskDialog(data: any): MatDialogRef<GiveTaskDialogComponent> {
         return this.dialog.open(GiveTaskDialogComponent, {
+            data: data,
+            width: '500px',
             hasBackdrop: true,
-            disableClose: true,
+            disableClose: false,
             autoFocus: false,
             backdropClass: 'dialog-backdrop',
             panelClass: 'centered-dialog',
@@ -34,7 +36,7 @@ export class DialogService {
     openAddTaskDialog() {
         return this.dialog.open(AddTaskDialogComponent, {
             hasBackdrop: true,
-            disableClose: true,
+            disableClose: false,
             autoFocus: false,
             backdropClass: 'dialog-backdrop',
             panelClass: 'centered-dialog',
@@ -44,7 +46,7 @@ export class DialogService {
     openViewTaskDialog() {
         return this.dialog.open(ViewTasksDialogComponent, {
             hasBackdrop: true,
-            disableClose: true,
+            disableClose: false,
             autoFocus: false,
             backdropClass: 'dialog-backdrop',
             panelClass: 'centered-dialog',

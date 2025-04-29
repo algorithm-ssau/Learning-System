@@ -1,5 +1,11 @@
-import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+interface DialogData {
+  selectedClass: string;
+  tasksData: any[];
+  studentsData: any[];
+}
 
 @Component({
   selector: 'app-give-task-dialog',
@@ -8,15 +14,24 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class GiveTaskDialogComponent {
   taskData = {
-    taskId: '1',
+    taskId: '',
     studentId: 'all'
-  }
-  constructor(private dialogRef: MatDialogRef<GiveTaskDialogComponent>){}
-  onCancel(): void{
-    this.dialogRef.close()
+  };
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private dialogRef: MatDialogRef<GiveTaskDialogComponent>
+  ) {}
+
+  onCancel(): void {
+    this.dialogRef.close();
   }
 
-  onAdd(): void{
-    this.dialogRef.close(this.taskData)
+  onAdd(): void {
+    if (!this.taskData.taskId) {
+      alert('Пожалуйста, выберите задание');
+      return;
+    }
+    this.dialogRef.close(this.taskData);
   }
 }
