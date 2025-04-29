@@ -1,0 +1,50 @@
+<!-- Весь блок команды, обёрнут в [formGroup] -->
+<div [formGroup]="control">
+  <ng-container *ngIf="control.get('type')?.value !== 'цикл'; else loopTemplate">
+    <div class="sub-command-block"
+          draggable="true"
+          (dragstart)="onDragStart()"
+          (dragend)="onDrop(index, parentArray)">
+      {{ control.get('text')?.value }}
+    </div>
+  </ng-container>
+
+  <ng-template #loopTemplate>
+    <div class="loop-block"
+          draggable="true"
+          (dragstart)="onDragStart()"
+          (dragend)="onDrop(index, parentArray)">
+
+      <label>Цикл:</label>
+      <input type="number" formControlName="iterations" min="2" max="10" (blur)="onIterationsBlur()">
+      <div *ngIf="control.get('iterations')?.invalid && control.get('iterations')?.touched" class="error-message">
+        <div *ngIf="control.get('iterations')?.errors?.['min']">Минимум 2 итерации.</div>
+        <div *ngIf="control.get('iterations')?.errors?.['max']">Максимум 10 итераций.</div>
+        <div *ngIf="control.get('iterations')?.errors?.['required']">Это поле обязательно.</div>
+      </div>
+
+      <div formArrayName="subCommands" class="sub-commands">
+        <ng-container *ngFor="let sub of asFormArray(control.get('subCommands')).controls; let j = index">
+          <app-command-block
+            [control]="asFormGroup(sub)"
+            [parentArray]="asFormArray(control.get('subCommands'))"
+            [index]="j"
+            [getTotalCommandCount]="getTotalCommandCount"
+            [maxCommands]="maxCommands"
+            (dragCommand)="dragCommand.emit($event)"
+            (dropCommand)="dropCommand.emit($event)">
+          </app-command-block>
+          <div *ngIf="!isLastCommand(j, asFormArray(control.get('subCommands')))" class="arrow-down"></div>
+        </ng-container>
+
+        <div class="drop-zone"
+              (drop)="onDrop(asFormArray(control.get('subCommands')).length, asFormArray(control.get('subCommands')))"
+              (dragover)="$event.preventDefault()">
+          + Добавить в конец цикла
+        </div>
+
+        <div class="loop-back-block">↻ Переход к началу цикла</div>
+      </div>
+    </div>
+  </ng-template>
+</div>

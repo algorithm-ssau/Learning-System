@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
-import { GameStateService, GameField, Task } from 'src/services/game-state.service';
+import { GameStateService, GameField, GameElement } from 'src/services/game-state.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -10,17 +10,13 @@ import { Router } from '@angular/router';
 })
 export class FieldEditorComponent implements OnInit{
 
+  isNewTask: boolean = true; // По умолчанию считаем, что создаём новое задание
   editorForm: FormGroup;
   width: number = 10;
   height: number = 10;
   gameField: number[] = Array(this.width * this.height).fill(0);
-  gameElements = [
-    { name: 'Empty', image: 'assets/empty.png', count: 0, max: this.width * this.height, index: 0},
-    { name: 'Rock', image: 'assets/rock.png', count: 0, max: 30, index: 1 },
-    { name: 'Coin', image: 'assets/coin.png', count: 0, max: 10, index: 2 },
-    { name: 'Hole', image: 'assets/hole.png', count: 0, max: 20, index: 3 },
-    { name: 'Ant', image: 'assets/ant.png', count: 0, max: 1, index: 4 }
-  ];
+  gameElements: GameElement [] = [];
+  collectCoins: boolean = false; // локальная переменная для флага
 
   constructor(
     private router: Router, 
@@ -30,13 +26,45 @@ export class FieldEditorComponent implements OnInit{
     this.editorForm = this.fb.group({
       "taskName": new FormControl("", {validators: [Validators.required, Validators.maxLength(30)]}),
       "taskText": new FormControl("", {validators: [Validators.required, Validators.maxLength(200)]}),
-      "energy": new FormControl(1, {validators: [Validators.required, Validators.min(1), Validators.max(50)]})
+      "energy": new FormControl(1, {validators: [Validators.required, Validators.min(1), Validators.max(50)]}),
     })
   }
 
   ngOnInit() {
-    const gameData: GameField = this.gs.getGameField();
-    this.gameField = Array(gameData.width * gameData.height).fill(0);
+    this.gameElements = this.gs.getGameElements();
+  
+    this.gs.getGameField().subscribe((gameData: GameField) => {
+      if (gameData.fieldID) {
+        this.isNewTask = false;
+      }
+  
+      if (gameData.gameField && gameData.gameField.length) {
+        this.gameField = [...gameData.gameField];
+      } else {
+        this.gameField = Array(gameData.width * gameData.height).fill(-1);
+      }
+  
+      this.editorForm.patchValue({ energy: gameData.energy });
+  
+      this.collectCoins = gameData.collectCoins;
+      this.updateElementCountsFromField();
+    });
+  }
+
+  private updateElementCountsFromField(): void {
+    // Обнуляем сначала все счётчики
+    this.gameElements.forEach(element => element.count = 0);
+  
+    // Проходим по каждой клетке поля
+    for (const cell of this.gameField) {
+      if (cell !== -1) {
+        // Находим элемент по индексу
+        const element = this.gameElements.find(e => e.index === cell);
+        if (element) {
+          element.count++;
+        }
+      }
+    }
   }
 
   goToJournal() {
@@ -75,48 +103,74 @@ export class FieldEditorComponent implements OnInit{
     event.preventDefault();
   }
 
-  onDrop(event: DragEvent, index: number) {
-    event.preventDefault();
-    const elementType = event.dataTransfer?.getData('text');
+  onDrop(event: DragEvent, targetIndex: number) {
+    event.preventDefault(); // обязательно!
   
-    if (elementType) {
-      const elementIndex = this.gameElements.findIndex(e => e.name === elementType);
+    // Читаем индекс перетаскиваемого элемента
+    const elementIndex = parseInt(event.dataTransfer?.getData('text/plain') || '-1', 10);
   
-      if (elementIndex !== -1 && this.gameElements[elementIndex].count < this.gameElements[elementIndex].max) {
-        const oldElementIndex = this.gameField[index]; // Получаем текущий элемент в клетке
+    if (elementIndex === -1) return; // если не нашли индекс
   
-        // Если заменяемый элемент не пуст (-1), уменьшаем его количество
-        if (oldElementIndex !== -1) {
-          const oldElement = this.gameElements[oldElementIndex];
-          if (oldElement.count > 0) {
-            oldElement.count--;
-          }
+    const draggedElement = this.gameElements.find(e => e.index === elementIndex);
+  
+    if (!draggedElement) return; // если элемент не найден
+  
+    // Ограничение: нельзя ставить монету, если сбор монет отключён
+    if (draggedElement.name === 'Coin' && !this.collectCoins) {
+      console.warn('Сбор монет отключён — нельзя добавить монету.');
+      return; // ПРЕКРАЩАЕМ операцию
+    }
+  
+    // Проверка лимита элементов
+    if (draggedElement.count < draggedElement.max) {
+      const oldElementIndex = this.gameField[targetIndex];
+  
+      // Если на клетке уже что-то стояло, уменьшаем его count
+      if (oldElementIndex !== -1) {
+        const oldElement = this.gameElements.find(e => e.index === oldElementIndex);
+        if (oldElement && oldElement.count > 0) {
+          oldElement.count--;
         }
-  
-        // Устанавливаем новый элемент
-        this.gameField[index] = elementIndex;
-        this.gameElements[elementIndex].count++;
       }
+  
+      // Ставим новый элемент на игровое поле
+      this.gameField[targetIndex] = draggedElement.index;
+      draggedElement.count++;
     }
   }
 
-  onDragStart(event: DragEvent, elementType: string) {
-    if (event.dataTransfer) {
-      event.dataTransfer.setData('text', elementType);
-    }
+  onDragStart(event: DragEvent, element: GameElement) {
+    event.dataTransfer?.setData('text/plain', element.index.toString());
+  }
+
+  get canSave(): boolean {
+    const ant = this.gameElements.find(e => e.name === 'Ant');
+    return !!ant && ant.count > 0 && this.editorForm.valid;
   }
 
   saveTask() {
     if (this.editorForm.valid) {
-      const taskData: Task = {
-        name: this.editorForm.value.taskName,
-        text: this.editorForm.value.taskText,
+      const baseField: Omit<GameField, 'fieldID'> = {
+        width: this.width,
+        height: this.height,
         energy: this.editorForm.value.energy,
-        id_field: 1
+        gameField: this.gameField,
+        collectCoins: this.collectCoins
       };
-      this.gs.saveTask(taskData);
+  
+      this.gs.newGameFieldId(baseField as GameField, this.isNewTask)
+        .subscribe((gfWithId: GameField) => {
+          this.gs.sendGameField(gfWithId).subscribe(() => {
+            alert('Игровое поле сохранено!');
+          });
+        });
+  
     } else {
       alert('Форма заполнена некорректно!');
     }
+  }
+
+  deleteTask(){
+
   }
 }
