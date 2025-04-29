@@ -24,6 +24,8 @@ import { GiveTaskDialogComponent } from './dialogs/give-task-dialog/give-task-di
 import { AddTaskDialogComponent } from './dialogs/add-task-dialog/add-task-dialog.component';
 import { ViewTasksDialogComponent } from './dialogs/view-tasks-dialog/view-tasks-dialog.component';
 import { CommandBlockComponent } from '../pages/command-block/command-block.component';
+import { EvaluationService } from 'src/services/evaluation.service';
+import { SimulationService } from 'src/services/simulation.service';
 
 const roots: Routes = [
   {path: '', component: AppComponent}, // Заменить авторизацией
@@ -59,10 +61,11 @@ const roots: Routes = [
     HttpClientModule,
     ReactiveFormsModule,
     CommonModule, 
-    FormsModule, BrowserAnimationsModule
+    FormsModule,
+    BrowserAnimationsModule
   ],
   providers: [
-    GameStateService
+    GameStateService,
   ],
   bootstrap: [
     AppComponent

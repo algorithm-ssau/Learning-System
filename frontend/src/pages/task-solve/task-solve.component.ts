@@ -2,14 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { EvaluationService } from 'src/services/evaluation.service';
 import { Router } from '@angular/router';
-import { GameElement, GameField, GameStateService } from 'src/services/game-state.service';
-
-interface CommandBlock {
-  type: string;
-  text: string;
-  iterations?: number; // Число итераций цикла (2-10)
-  commands?: CommandBlock[];
-}
+import { GameElement, GameStateService } from 'src/services/game-state.service';
+import { SimulationService } from 'src/services/simulation.service';
 
 @Component({
   selector: 'app-task-solve',
@@ -49,6 +43,7 @@ export class TaskSolveComponent implements OnInit{
     private evaluationService: EvaluationService,
     private gs: GameStateService,
     private router: Router,
+    private ss: SimulationService
   ) {
     this.algorithmForm = this.fb.group({
       commands: this.fb.array([])
@@ -262,6 +257,27 @@ export class TaskSolveComponent implements OnInit{
   }
 
   runSolution(): void {
-    this.consoleMessages.push("Запуск алгоритма");
+    this.consoleMessages = [];
+    this.isRunning = true;
+  
+    const { done$, log$ } = this.ss.simulateFromString(this.convertAlgorithmToString(), 500);
+  
+    // Подписка на поток логов
+    log$.subscribe((msg: string) => {
+      this.consoleMessages.push(msg);
+    });
+  
+    // Подписка на завершение
+    done$.subscribe({
+      complete: () => {
+        this.consoleMessages.push('✅ Алгоритм успешно выполнен');
+        this.isRunning = false;
+      },
+      error: (err: string) => {
+        this.consoleMessages.push(`❌ Ошибка: ${err}`);
+        this.isRunning = false;
+      }
+    });
+    console.log("Я работаю!");
   }
 }

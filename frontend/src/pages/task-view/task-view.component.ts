@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { EvaluationService } from 'src/services/evaluation.service';
 import { Router } from '@angular/router';
+import { GameElement, GameStateService } from 'src/services/game-state.service';
+import { SimulationService } from 'src/services/simulation.service';
 
 @Component({
   selector: 'app-task-view',
@@ -9,12 +11,18 @@ import { Router } from '@angular/router';
   styleUrls: ['./task-view.component.css']
 })
 export class TaskViewComponent implements OnInit{
+  taskID: number = 1;
+  studentID: string = '';
   taskText: string = '';
   commandLimit: number = 0;
-  commandCount: number = 0;
-  parsedAlgorithm: any[] = [];
-  gameGrid: string[][] = [];
+  algorithmForm: FormGroup;
+  parsedAlgorithm: string = '';
+  width = 10;
+  height = 10;
+  gameGrid: number[] = Array(this.width * this.height).fill(0);
+  gameElements: GameElement [] = [];
   executionLogs: string[] = [];
+  isRunning = false;
   
   ratings: number[] = [1, 2, 3, 4, 5];
 
@@ -22,20 +30,49 @@ export class TaskViewComponent implements OnInit{
     selectedRating: new FormControl(1)
   });
 
-  constructor(private evaluationService: EvaluationService, private router: Router) {}
-
-  ngOnInit(): void {
-    this.loadData();
+  constructor(
+    private fb: FormBuilder,
+    private evaluationService: EvaluationService,
+    private gs: GameStateService,
+    private ss: SimulationService,
+    private router: Router) {
+      this.algorithmForm = this.fb.group({
+        commands: this.fb.array([])
+      });
   }
 
-  loadData(): void {
-    this.evaluationService.getEvaluationData().subscribe(data => {
-      this.taskText = data.taskText;
-      this.commandLimit = data.commandLimit;
-      this.parsedAlgorithm = this.parseAlgorithm(data.algorithm);
-      this.commandCount = this.countCommands(data.algorithm);
-      this.gameGrid = data.gameGrid;
+  ngOnInit(): void {
+    this.evaluationService.getTaskDetails(this.taskID, this.studentID).subscribe(task => {
+      this.taskText = task[0].goal;
+      this.gameGrid = [... task[2].gameField];
+      this.parsedAlgorithm = task[1].algorithm;
     });
+    this.gameElements = this.gs.getGameElements();
+  }
+
+
+  getTotalCommandCount(): number {
+    const countCommands = (commands: FormArray): number => {
+      let count = 0;
+      commands.controls.forEach(command => {
+        count++;
+        if (command.get('type')?.value === 'цикл') {
+          const subCommands = command.get('subCommands') as FormArray;
+          count += countCommands(subCommands);
+        }
+      });
+      return count;
+    };
+  
+    return countCommands(this.commands);
+  }
+
+  get commands(): FormArray {
+    return this.algorithmForm.get('commands') as FormArray;
+  }
+
+  asFormGroup(control: AbstractControl | null): FormGroup {
+    return control as FormGroup;
   }
 
   parseAlgorithm(algorithm: string): any[] {
@@ -67,12 +104,12 @@ export class TaskViewComponent implements OnInit{
     return parsed;
   }
 
-  countCommands(algorithm: string): number {
-    return algorithm.split('|').filter(cmd => !cmd.startsWith('цикл')).length;
+  isLastCommand(index: number, array: FormArray): boolean {
+    return index === array.length - 1;
   }
 
   goToJournal(): void {
-    this.router.navigate(['/journal']);
+    this.router.navigate(['/teacherjournal']);
   }
 
   submitRating(): void {
@@ -88,5 +125,51 @@ export class TaskViewComponent implements OnInit{
 
   executeAlgorithm(): void {
     this.executionLogs.push('Выполнение алгоритма...');
+  }
+
+  get gridStyle() {
+    return {
+      'grid-template-columns': `repeat(${this.width}, 60px)`,
+      'grid-template-rows': `repeat(${this.height}, 60px)`
+    };
+  }
+
+  getElementImage(type: number): string {
+    const element = this.gameElements.find(e => e.index === type);
+    return element ? element.image : 'assets/empty.png';
+  }
+
+  getElementStyle() {
+    const cellSize = 58;
+    return {
+      width: `${cellSize}px`,
+      height: `${cellSize}px`,
+      'object-fit': 'contain' // Чтобы изображение не обрезалось
+    };
+  }
+
+  runSolution(): void {
+    this.executionLogs = [];
+    this.isRunning = true;
+  
+    const { done$, log$ } = this.ss.simulateFromString(this.parsedAlgorithm, 500);
+  
+    // Подписка на поток логов
+    log$.subscribe((msg: string) => {
+      this.executionLogs.push(msg);
+    });
+  
+    // Подписка на завершение
+    done$.subscribe({
+      complete: () => {
+        this.executionLogs.push('✅ Алгоритм успешно выполнен');
+        this.isRunning = false;
+      },
+      error: (err: string) => {
+        this.executionLogs.push(`❌ Ошибка: ${err}`);
+        this.isRunning = false;
+      }
+    });
+    console.log("Я работаю!");
   }
 }
