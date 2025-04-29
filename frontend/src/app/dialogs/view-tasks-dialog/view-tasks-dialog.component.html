@@ -1,1 +1,64 @@
-<p>view-tasks-dialog works!</p>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Список созданных заданий</title>
+</head>
+<body>
+
+    <div id="list-task-modal" class="modal">
+        <div class="modal-content">
+            <h2>Список созданных заданий</h2>
+            <div class="d-flex flex-wrap-wrap">
+                <button class="button-task">Собрать 5 монет</button>
+                <button class="button-task">Собрать 3 монеты и <br> заполнить все лунки</button>
+                <button class="button-task">Заполнить 10 лунок</button>
+                <button class="button-task">Собрать все монеты</button>
+                <button class="button-task">Собрать 5 монет</button>
+                <button class="button-task">Собрать 3 монеты и <br> заполнить все лунки</button>
+                <button class="button-task">Заполнить 10 лунок</button>
+                <button class="button-task">Собрать все монеты</button>
+                <button class="button-task">Собрать 5 монет</button>
+                <button class="button-task">Собрать 3 монеты и <br> заполнить все лунки</button>
+                <button class="button-task">Заполнить 10 лунок</button>
+                <button class="button-task">Собрать все монеты</button>
+                <button class="button-task">Собрать 5 монет</button>
+                <button class="button-task">Собрать 3 монеты и <br> заполнить все лунки</button>
+                <button class="button-task">Заполнить 10 лунок</button>
+                <button class="button-task">Собрать все монеты</button>
+                <button class="button-task">Собрать 5 монет</button>
+                <button class="button-task">Собрать 3 монеты и <br> заполнить все лунки</button>
+                <button class="button-task">Заполнить 10 лунок</button>
+                <button class="button-task">Собрать все монеты</button>
+                <button class="button-task">Собрать 5 монет</button>
+                <button class="button-task">Собрать 3 монеты и <br> заполнить все лунки</button>
+                <button class="button-task">Заполнить 10 лунок</button>
+                <button class="button-task">Собрать все монеты</button>
+                <button class="button-task">Собрать 5 монет</button>
+                <button class="button-task">Собрать 3 монеты и <br> заполнить все лунки</button>
+                <button class="button-task">Заполнить 10 лунок</button>
+                <button class="button-task">Собрать все монеты</button>
+                <button class="button-task">Собрать 5 монет</button>
+                <button class="button-task">Собрать 3 монеты и <br> заполнить все лунки</button>
+                <button class="button-task">Заполнить 10 лунок</button>
+                <button class="button-task">Собрать все монеты</button>
+            </div>
+            <button class="close-btn" onclick="closeModal('list-task-modal')">Закрыть</button>
+        </div>
+    </div>
+
+<script>
+    document.getElementById('list-task-btn').addEventListener('click', function() {
+        document.getElementById('list-task-modal').style.display = 'flex';
+    });
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+    document.getElementById('task-choice').addEventListener('change', function() {
+        if (this.value === 'automatic') {
+        document.getElementById('automatic-fields').style.display = 'block';
+        } else {
+        document.getElementById('automatic-fields').style.display = 'none';
+        }
+    });
+</script>
