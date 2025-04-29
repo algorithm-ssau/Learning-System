@@ -1,17 +1,44 @@
-.modal-content {
-    background-color: white;
+body {
+    font-family: Arial, sans-serif;
     padding: 20px;
-    border-radius: 10px;
-    width: 330px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
 
-  #create-task-modal .modal-content {
-      width: 420px;
+  #info-modal .modal-content p{
+      text-align: center;
+  }
+
+  .modal-content {
+    overflow: auto;
+    top: 0;
+    left: 0;
+    width: 80vw;
+    height: 80vh;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
 
   .modal-content h2 {
     margin-top: 0;
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 6px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border: 2px solid #007bff;
+  }
+
+  button:hover {
+      color: #007bff;
+      background-color: transparent;
   }
 
   .close-btn {
@@ -22,44 +49,30 @@
     border-radius: 6px;
     cursor: pointer;
     float: right;
-  }
-  select {
-    width: 220px;
-    padding: 5px 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    font-size: 16px;
-    color: #333;
-    transition: all 0.3s ease;
+    border: 2px solid red;
   }
 
-  select:focus {
-    border-color: #007bff;
-    background-color: #f7faff;
-    outline: none;
+
+  .close-btn:hover {
+      background-color: transparent;
+      color: red;
+      border: 2px solid red;
   }
 
-  option {
-    padding: 5px;
+  #list-task-modal .modal-content{
+      width: 90%;
   }
 
-  input {
-    width: 200px;
-    padding: 5px 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    transition: all 0.3s ease;
+  .button-task{
+      min-height: 56px;
+      min-width: 200px;
   }
 
-  input:focus {
-    border-color: #007bff;
-    background-color: #e7f1ff;
-    outline: none;
+  .d-flex {
+      display: flex;
   }
 
-  input::placeholder {
-    color: #888;
+  .flex-wrap-wrap {
+      flex-wrap: wrap;
+      gap: 10px;
   }

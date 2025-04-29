@@ -1,19 +1,34 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { forkJoin, map, Observable, switchMap } from 'rxjs';
+import { GameField } from './game-state.service';
+import { GameStateService } from './game-state.service';
 
-interface TaskData {
-  taskId: number;
-  studentId: number;
-  description: string;
-  maxCommands: number;
+interface Task {
+  taskID: number;
+  name: string;
+  gameFieldID: number;
+  goal: string;
+}
+
+interface Solution {
+  solutionID: number;
+  studentID: string;
+  taskID: number;
+  algorithm: string;
+}
+
+interface SolveTask {
+  taskID: number;
+  studentID: string;
+  mark: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class EvaluationService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private gs: GameStateService) {}
 
   getEvaluationData(): Observable<any> {
     return this.http.get('/api/evaluation');
@@ -23,8 +38,29 @@ export class EvaluationService {
     return this.http.post('/api/rating', { rating });
   }
 
-  getTaskDetails(): Observable<TaskData> {
-    return this.http.get<TaskData>('/api/evaluation');
+  getTaskDetails(taskId: number, studentID: string): Observable<[Task, Solution, GameField]> {
+    return forkJoin([
+      this.getTask(taskId),
+      this.getSolution(taskId, studentID)
+    ]).pipe(
+      switchMap(([task, solution]) => {
+        return this.gs.getGameField(task.gameFieldID).pipe(
+          map(gameField => [task, solution, gameField] as [Task, Solution, GameField])
+        );
+      })
+    );
+  }
+
+  getTask(taskId: number): Observable<Task> {
+    const params = new HttpParams().set('taskId', taskId.toString());
+    return this.http.get<Task>('/api/task', { params });
+  }
+  
+  getSolution(taskId: number, studentID: string): Observable<Solution> {
+    const params = new HttpParams()
+      .set('taskId', taskId.toString())
+      .set('studentID', studentID);
+    return this.http.get<Solution>('/api/solution', { params });
   }
 
   submitSolution(studentId: number, taskId: number, solution: string): Observable<any> {

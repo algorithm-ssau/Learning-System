@@ -18,11 +18,16 @@ import { FieldEditorComponent } from 'src/pages/field-editor/field-editor.compon
 import { TaskViewComponent } from 'src/pages/task-view/task-view.component';
 import { TaskSolveComponent } from 'src/pages/task-solve/task-solve.component';
 import { TeacherJournalComponent } from '../pages/teacher-journal/teacher-journal.component';
+import { DeveloperInfoComponent } from 'src/pages/developer-info/developer-info.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AddStudentDialogComponent } from './dialogs/add-student-dialog/add-student-dialog.component';
 import { GiveTaskDialogComponent } from './dialogs/give-task-dialog/give-task-dialog.component';
 import { AddTaskDialogComponent } from './dialogs/add-task-dialog/add-task-dialog.component';
 import { ViewTasksDialogComponent } from './dialogs/view-tasks-dialog/view-tasks-dialog.component';
+import { CommandBlockComponent } from '../pages/command-block/command-block.component';
+import { EvaluationService } from 'src/services/evaluation.service';
+import { SimulationService } from 'src/services/simulation.service';
+
 
 const roots: Routes = [
   {path: '', component: AppComponent}, // Заменить авторизацией
@@ -30,6 +35,7 @@ const roots: Routes = [
   {path: 'view', component: TaskViewComponent},
   {path: 'solve', component: TaskSolveComponent},
   {path: 'teacherjournal', component: TeacherJournalComponent},
+  {path: 'developerinfo', component: DeveloperInfoComponent},
   {path: '**', component: AppComponent}
 ]
 
@@ -44,6 +50,8 @@ const roots: Routes = [
     GiveTaskDialogComponent,
     AddTaskDialogComponent,
     ViewTasksDialogComponent,
+    DeveloperInfoComponent,
+    CommandBlockComponent
   ],
   imports: [
     BrowserModule,
@@ -56,11 +64,12 @@ const roots: Routes = [
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    CommonModule, 
-    FormsModule, BrowserAnimationsModule
+    CommonModule,
+    FormsModule,
+    BrowserAnimationsModule
   ],
   providers: [
-    GameStateService
+    GameStateService,
   ],
   bootstrap: [
     AppComponent
