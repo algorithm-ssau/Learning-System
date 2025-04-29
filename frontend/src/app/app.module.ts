@@ -18,6 +18,7 @@ import { FieldEditorComponent } from 'src/pages/field-editor/field-editor.compon
 import { TaskViewComponent } from 'src/pages/task-view/task-view.component';
 import { TaskSolveComponent } from 'src/pages/task-solve/task-solve.component';
 import { TeacherJournalComponent } from '../pages/teacher-journal/teacher-journal.component';
+import { DeveloperInfoComponent } from 'src/pages/developer-info/developer-info.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AddStudentDialogComponent } from './dialogs/add-student-dialog/add-student-dialog.component';
 import { GiveTaskDialogComponent } from './dialogs/give-task-dialog/give-task-dialog.component';
@@ -27,12 +28,14 @@ import { CommandBlockComponent } from '../pages/command-block/command-block.comp
 import { EvaluationService } from 'src/services/evaluation.service';
 import { SimulationService } from 'src/services/simulation.service';
 
+
 const roots: Routes = [
   {path: '', component: AppComponent}, // Заменить авторизацией
   {path: 'editor', component: FieldEditorComponent},
   {path: 'view', component: TaskViewComponent},
   {path: 'solve', component: TaskSolveComponent},
   {path: 'teacherjournal', component: TeacherJournalComponent},
+  {path: 'developerinfo', component: DeveloperInfoComponent},
   {path: '**', component: AppComponent}
 ]
 
@@ -47,6 +50,7 @@ const roots: Routes = [
     GiveTaskDialogComponent,
     AddTaskDialogComponent,
     ViewTasksDialogComponent,
+    DeveloperInfoComponent,
     CommandBlockComponent
   ],
   imports: [
@@ -60,7 +64,7 @@ const roots: Routes = [
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    CommonModule, 
+    CommonModule,
     FormsModule,
     BrowserAnimationsModule
   ],
