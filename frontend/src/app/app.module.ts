@@ -23,6 +23,7 @@ import { AddStudentDialogComponent } from './dialogs/add-student-dialog/add-stud
 import { GiveTaskDialogComponent } from './dialogs/give-task-dialog/give-task-dialog.component';
 import { AddTaskDialogComponent } from './dialogs/add-task-dialog/add-task-dialog.component';
 import { ViewTasksDialogComponent } from './dialogs/view-tasks-dialog/view-tasks-dialog.component';
+import { CommandBlockComponent } from '../pages/command-block/command-block.component';
 
 const roots: Routes = [
   {path: '', component: AppComponent}, // Заменить авторизацией
@@ -44,6 +45,7 @@ const roots: Routes = [
     GiveTaskDialogComponent,
     AddTaskDialogComponent,
     ViewTasksDialogComponent,
+    CommandBlockComponent
   ],
   imports: [
     BrowserModule,

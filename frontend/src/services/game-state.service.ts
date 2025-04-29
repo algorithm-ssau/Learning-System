@@ -1,8 +1,9 @@
+import { HttpParams, HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, shareReplay } from 'rxjs';
 
 export interface GameField {
-    id?: number;
+    fieldID?: number;
     width: number,
     height: number,
     energy: number,
@@ -16,13 +17,6 @@ export interface GameElement {
     count: number;
     max: number;
     index: number;
-}
-
-export interface Task {
-    name: string,
-    text: string,
-    energy: number,
-    id_field: number
 }
 
 @Injectable({
@@ -41,7 +35,7 @@ export class GameStateService {
         { name: 'Ant', image: 'assets/ant.png', count: 0, max: 1, index: 4 }
       ];
 
-    constructor(){
+    constructor(private http: HttpClient){
         const initialField: GameField = {
             width: this.width,
             height: this.height,
@@ -59,13 +53,41 @@ export class GameStateService {
     }
 
     // Получить Observable поля
-    getGameField(): Observable<GameField> {
+    getGameField(gameFieldID?: number): Observable<GameField> {
+        if (this.gfSubject.value) {
+          return this.gfSubject.asObservable();
+        }
+      
+        let params = new HttpParams();
+        if (gameFieldID !== undefined) {
+          params = params.set('gameFieldID', gameFieldID.toString());
+        }
+      
+        this.http.get<GameField>('/api/evaluation', { params }).subscribe(field => {
+          this.gfSubject.next(field);
+        });
+      
         return this.gfSubject.asObservable();
     }
 
-    saveTask(task: Task){
-        console.log(task);
+    sendGameField(gf: GameField): Observable<GameField>{
+        return this.http.post<GameField>('/api/rating', gf);
     }
+
+    newGameFieldId(gameField: Partial<GameField>, isNewTask: boolean): Observable<GameField> {
+        if (!isNewTask) {
+          // Оставляем существующий id
+          return of(gameField as GameField);
+        }
+      
+        // Новый id — запрашиваем с сервера
+        return this.http.get<number>('/api/gamefield/new-id').pipe(
+            map((newId: number) => ({
+              ...gameField,
+              fieldID: newId
+            } as GameField))
+        );
+      }
 
     // Получить элементы
     getGameElements(): GameElement[] {

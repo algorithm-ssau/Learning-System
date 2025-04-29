@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { EvaluationService } from 'src/services/evaluation.service';
 import { Router } from '@angular/router';
+import { GameElement, GameField, GameStateService } from 'src/services/game-state.service';
 
 interface CommandBlock {
   type: string;
@@ -16,6 +17,8 @@ interface CommandBlock {
   styleUrls: ['./task-solve.component.css']
 })
 export class TaskSolveComponent implements OnInit{
+  taskID: number = 1;
+  studentID: string = '';
   algorithmForm: FormGroup;
   taskDescription: string = '';
   consoleMessages: string[] = [];
@@ -23,11 +26,29 @@ export class TaskSolveComponent implements OnInit{
   studentId!: number;
   taskId!: number;
   draggedCommand: string | null = null;
+  draggedFromCommands: FormArray | null = null;
+  draggedCommandIndex: number | null = null;
+  droppedSuccessfully = false;
+  commandWasMoved = false;
+  width = 10;
+  height = 10;
+  gameField: number[] = Array(this.width * this.height).fill(0);
+  gameElements: GameElement [] = [];
+  isRunning = false;
+
+  commandsList = [
+    { name: 'вверх', label: '↑ Вверх' },
+    { name: 'вниз', label: '↓ Вниз' },
+    { name: 'вправо', label: '→ Вправо' },
+    { name: 'влево', label: '← Влево' },
+    { name: 'цикл', label: '⭮ Цикл' }
+  ];
 
   constructor(
     private fb: FormBuilder,
     private evaluationService: EvaluationService,
-    private router: Router
+    private gs: GameStateService,
+    private router: Router,
   ) {
     this.algorithmForm = this.fb.group({
       commands: this.fb.array([])
@@ -35,20 +56,43 @@ export class TaskSolveComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.evaluationService.getTaskDetails().subscribe(task => {
-      this.taskDescription = task.description;
-      this.maxCommands = task.maxCommands;
-      this.taskId = task.taskId;
-      this.studentId = task.studentId;
+    this.evaluationService.getTaskDetails(this.taskID, this.studentID).subscribe(task => {
+      this.taskDescription = task[0].goal;
+      this.gameField = [... task[2].gameField];
     });
+    this.gameElements = this.gs.getGameElements();
   }
 
   get commands(): FormArray {
     return this.algorithmForm.get('commands') as FormArray;
   }
 
+  asFormGroup(control: AbstractControl | null): FormGroup {
+    return control as FormGroup;
+  }
+
   goToJournal(): void {
     this.router.navigate(['/journal']);
+  }
+
+  asFormArray(control: AbstractControl | null): FormArray {
+    return control as FormArray;
+  }
+
+  getTotalCommandCount(): number {
+    const countCommands = (commands: FormArray): number => {
+      let count = 0;
+      commands.controls.forEach(command => {
+        count++;
+        if (command.get('type')?.value === 'цикл') {
+          const subCommands = command.get('subCommands') as FormArray;
+          count += countCommands(subCommands);
+        }
+      });
+      return count;
+    };
+  
+    return countCommands(this.commands);
   }
 
   addCommand(type: string, parentArray?: FormArray): void {
@@ -66,54 +110,158 @@ export class TaskSolveComponent implements OnInit{
     }
   }
 
-  dragCommand(type: string): void {
-    this.draggedCommand = type;
+  dragCommand(type: string, parentArray?: FormArray, index?: number): void {
+    if (parentArray && index !== undefined) {
+      this.draggedCommand = parentArray.at(index).get('type')?.value;
+      this.draggedFromCommands = parentArray;
+      this.draggedCommandIndex = index;
+    } else {
+      this.draggedCommand = type;
+      this.draggedFromCommands = null;
+      this.draggedCommandIndex = null;
+    }
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
   }
 
   dropCommand(index: number, parentArray?: FormArray): void {
     if (!this.draggedCommand) return;
-    
-    if (parentArray) {
-      parentArray.setControl(index, this.fb.group({
+  
+    const targetArray = parentArray || this.commands;
+    this.droppedSuccessfully = true;
+    this.commandWasMoved = true; // 🆕
+  
+    const totalCount = this.getTotalCommandCount();
+    if (totalCount >= this.maxCommands) {
+      alert(`Нельзя добавить больше ${this.maxCommands} команд`);
+      this.clearDragState();
+      return;
+    }
+  
+    if (this.draggedCommand === 'цикл') {
+      const depth = this.calculateDepth(parentArray || this.commands);
+      if (depth > 3) {
+        alert('Нельзя вложить более 3 уровней циклов!');
+        this.clearDragState();
+        return;
+      }
+    }
+  
+    if (this.draggedFromCommands && this.draggedCommandIndex !== null) {
+      const moved = this.draggedFromCommands.at(this.draggedCommandIndex);
+      this.draggedFromCommands.removeAt(this.draggedCommandIndex);
+  
+      const correctedIndex = (this.draggedFromCommands === targetArray && this.draggedCommandIndex < index)
+        ? index - 1 : index;
+  
+      targetArray.insert(correctedIndex, moved);
+    } else {
+      const command = this.fb.group({
         type: new FormControl(this.draggedCommand),
         text: new FormControl(this.draggedCommand === 'цикл' ? 'цикл' : this.draggedCommand),
         iterations: new FormControl(this.draggedCommand === 'цикл' ? 2 : null),
-        subCommands: this.fb.array([]) 
-      }));
-    } else {
-      this.addCommand(this.draggedCommand);
+        subCommands: this.fb.array([])
+      });
+      targetArray.insert(index, command);
     }
-    
+  
+    this.clearDragState();
+  }
+
+  isLastCommand(index: number, array: FormArray): boolean {
+    return index === array.length - 1;
+  }
+  
+  clearDragState(): void {
     this.draggedCommand = null;
+    this.draggedFromCommands = null;
+    this.draggedCommandIndex = null;
+    this.droppedSuccessfully = false;
+    this.commandWasMoved = false;
+  }
+
+  calculateDepth(control: AbstractControl | null): number {
+    let depth = 1;
+    let current = control;
+    while (current?.parent) {
+      const parent = current.parent;
+      if (parent instanceof FormGroup && parent.contains('subCommands')) {
+        depth++;
+        current = parent.parent; // Переход к следующему уровню
+      } else {
+        break;
+      }
+    }
+    return depth;
+  }
+
+  handleDropOutside(): void {
+    if (this.draggedFromCommands && this.draggedCommandIndex !== null) {
+      this.draggedFromCommands.removeAt(this.draggedCommandIndex);
+    }
+    this.clearDragState();
+  }
+
+  onDragEnd(): void {
+    if (!this.droppedSuccessfully &&
+        !this.commandWasMoved &&
+        this.draggedFromCommands &&
+        this.draggedCommandIndex !== null) {
+      this.draggedFromCommands.removeAt(this.draggedCommandIndex);
+    }
+    this.clearDragState();
+  }
+
+  get gridStyle() {
+    return {
+      'grid-template-columns': `repeat(${this.width}, 60px)`,
+      'grid-template-rows': `repeat(${this.height}, 60px)`
+    };
+  }
+
+  getElementImage(type: number): string {
+    const element = this.gameElements.find(e => e.index === type);
+    return element ? element.image : 'assets/empty.png';
+  }
+
+  getElementStyle() {
+    const cellSize = 58;
+    return {
+      width: `${cellSize}px`,
+      height: `${cellSize}px`,
+      'object-fit': 'contain' // Чтобы изображение не обрезалось
+    };
   }
 
   convertAlgorithmToString(): string {
-    let result: string[] = [];
-
-    const processCommands = (commands: FormArray) => {
-      commands.controls.forEach(command => {
-        if (command.get('type')?.value === 'цикл') {
-          let iterations = command.get('iterations')?.value || 2;
-          result.push(`цикл ${iterations}`);
-          processCommands(command.get('subCommands') as FormArray);
+    const processCommands = (commands: FormArray): string => {
+      return commands.controls.map(command => {
+        const type = command.get('type')?.value;
+  
+        if (type === 'цикл') {
+          const iterations = command.get('iterations')?.value || 2;
+          const subCommands = processCommands(command.get('subCommands') as FormArray);
+          return `цикл ${iterations} {${subCommands}}`;
         } else {
-          result.push(command.get('text')?.value);
+          return command.get('text')?.value;
         }
-      });
+      }).join('|');
     };
-
-    processCommands(this.commands);
-    return result.join('|');
+  
+    return processCommands(this.commands);
   }
 
   submitSolution(): void {
     const solutionString = this.convertAlgorithmToString();
+    console.log(solutionString);
     
     this.evaluationService.submitSolution(this.studentId, this.taskId, solutionString)
       .subscribe(() => alert('Решение отправлено на проверку!'));
   }
 
   runSolution(): void {
-    this.consoleMessages.push('Запуск алгоритма...');
+    this.consoleMessages.push("Запуск алгоритма");
   }
 }

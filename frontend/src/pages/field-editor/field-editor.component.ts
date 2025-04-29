@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
-import { GameStateService, GameField, GameElement, Task } from 'src/services/game-state.service';
+import { GameStateService, GameField, GameElement } from 'src/services/game-state.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -34,7 +34,7 @@ export class FieldEditorComponent implements OnInit{
     this.gameElements = this.gs.getGameElements();
   
     this.gs.getGameField().subscribe((gameData: GameField) => {
-      if (gameData.id) {
+      if (gameData.fieldID) {
         this.isNewTask = false;
       }
   
@@ -150,13 +150,21 @@ export class FieldEditorComponent implements OnInit{
 
   saveTask() {
     if (this.editorForm.valid) {
-      const taskData: Task = {
-        name: this.editorForm.value.taskName,
-        text: this.editorForm.value.taskText,
+      const baseField: Omit<GameField, 'fieldID'> = {
+        width: this.width,
+        height: this.height,
         energy: this.editorForm.value.energy,
-        id_field: 1
+        gameField: this.gameField,
+        collectCoins: this.collectCoins
       };
-      this.gs.saveTask(taskData);
+  
+      this.gs.newGameFieldId(baseField as GameField, this.isNewTask)
+        .subscribe((gfWithId: GameField) => {
+          this.gs.sendGameField(gfWithId).subscribe(() => {
+            alert('Игровое поле сохранено!');
+          });
+        });
+  
     } else {
       alert('Форма заполнена некорректно!');
     }
