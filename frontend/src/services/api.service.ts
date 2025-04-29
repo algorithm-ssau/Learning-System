@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { Student } from 'src/app/models/student.model';
 
 @Injectable({
     providedIn: 'root'
@@ -23,19 +24,11 @@ export class ApiService {
         return this.http.get(`${this.apiUrl}/students/${login}/tasks`)
     }
 
-    getStudent(login: string): Observable<any> {
-        return this.http.get('$(this.apiUrl}/students/${login}');
+    getAllTasks(): Observable<any> {
+        return this.http.get(`${this.apiUrl}/tasks/`)
     }
 
-    createStudent(student: any): Observable<any> {
-        return this.http.post('${this.apiUrl}/students/', student);
-    }
-
-    getTasks(): Observable<any> {
-        return this.http.get('${this.apiUrl}/tasks/');
-    }
-
-    getTask(id: number): Observable<any> {
-        return this.http.get('${this.apiUrl}/tasks/${id}');
+    postStudent(student: Student): Observable<any> {
+        return this.http.post(`${this.apiUrl}/students`, student)
     }
 }

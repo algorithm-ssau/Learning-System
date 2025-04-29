@@ -48,15 +48,15 @@
             <div *ngFor="let taskControl of getStudentTasks(student).controls; let j = index"
                  class="student-tasks">
               <div class="task">
-                <div class="task-name">{{ taskControl.value.task_name }}</div>
+                <div class="task-name">{{ taskControl.value.taskName }}</div>
                 <div class="task-grade" 
-                  [class.unsolved]="taskControl.value.task_mark === 0"
-                  [class.solved]="taskControl.value.task_mark === -1"
-                  [class.grade-2]="taskControl.value.task_mark === 2"
-                  [class.grade-3]="taskControl.value.task_mark === 3"
-                  [class.grade-4]="taskControl.value.task_mark === 4"
-                  [class.grade-5]="taskControl.value.task_mark === 5">
-                  {{ taskControl.value.task_mark > 1 ? taskControl.value.task_mark : '' }}
+                  [class.unsolved]="taskControl.value.taskMark === 0"
+                  [class.solved]="taskControl.value.taskMark === -1"
+                  [class.grade-2]="taskControl.value.taskMark === 2"
+                  [class.grade-3]="taskControl.value.taskMark === 3"
+                  [class.grade-4]="taskControl.value.taskMark === 4"
+                  [class.grade-5]="taskControl.value.taskMark === 5">
+                  {{ taskControl.value.taskMark > 1 ? taskControl.value.taskMark : '' }}
                 </div>
               </div>
             </div>

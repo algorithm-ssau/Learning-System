@@ -1,26 +1,29 @@
 <div id="set-task-modal" class="modal">
     <div class="modal-content">
-        <h2>Выдача заданий</h2>
+        <h2>Выдача заданий для {{ data.selectedClass }}</h2>
         <form (ngSubmit)="onAdd()" #taskGiveForm="ngForm">
             <div class="row">
                 <label>Задание:</label>
-                <select [(ngModel)]="taskData.taskId" id="task-name" placeholder="Выберите задание" required>
-                    <option value="1">Задание 1</option>
-                    <option value="2">Задание 2</option>
-                    <option value="3">Задание 3</option>
+                <select [(ngModel)]="taskData.taskId" name="taskId" required>
+                    <option value="" disabled selected>Выберите задание</option>
+                    <option *ngFor="let task of data.tasksData" 
+                            [value]="task.id_task || task.id">
+                        {{ task.task_name || task.name }}
+                    </option>
                 </select>
             </div>
             <div class="row">
                 <label>Кому выдать:</label>
-                <select [(ngModel)]="taskData.studentId" id="task-student" placeholder="Выберите учеников" required>
-                    <option value="all">Все ученики</option>
-                    <option value="1">Ученик 1</option>
-                    <option value="2">Ученик 2</option>
-                    <option value="3">Ученик 3</option>
+                <select [(ngModel)]="taskData.studentId" name="studentId" required>
+                    <option value="all">Все ученики класса</option>
+                    <option *ngFor="let student of data.studentsData" 
+                            [value]="student[0] || student.id">
+                        {{ student[1] || student.name }}
+                    </option>
                 </select>
             </div>
-            <button (click)="onAdd()">Выдать задание</button>
-            <button class="close-btn" (click)="onCancel()">Закрыть</button>
+            <button type="submit">Выдать задание</button>
+            <button type="button" class="close-btn" (click)="onCancel()">Закрыть</button>
         </form>
     </div>
 </div>

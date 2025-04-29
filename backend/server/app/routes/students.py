@@ -35,10 +35,6 @@ def get_student_tasks(login: str, db: Session = Depends(get_db)):
     ).filter(
         models.Journal.student_login == login
     ).all()
-
-    if not tasks:
-        raise HTTPException(status_code=404, detail="Не найден ученик или у данного ученика нет заданий")
-
     return [{"task_name": task.task_name, "task_mark": task.task_mark} for task in tasks]
 
 @router.get('/{login}', response_model=schemas.StudentResponse)

@@ -7,8 +7,22 @@ from ..database import get_db
 router = APIRouter(prefix='/tasks', tags=['tasks'])
 
 @router.get('/', response_model=List[schemas.TaskResponse])
-def read_tasks(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return db.query(models.Task).offset(skip).limit(limit).all()
+def read_tasks(skip: int = 0, limit: int = 100000, db: Session = Depends(get_db)):
+    try:
+        print("Attempting to query tasks...")  # Debug log
+        tasks = db.query(models.Task).offset(skip).limit(limit).all()
+        print(f"Found {len(tasks)} tasks")  # Debug log
+        
+        # Temporary: Print the first task to check serialization
+        if tasks:
+            print("Sample task:", tasks[0].__dict__)
+        
+        return tasks
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f'Error retrieving tasks statistics: {str(e)}'
+        )
 
 @router.get('/{task_id}', response_model=schemas.TaskResponse)
 def read_task(task_id: int, db: Session = Depends(get_db)):
