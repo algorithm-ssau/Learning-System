@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, AbstractControl, Validators } from '@angular/forms';
 import { ApiService } from 'src/services/api.service';
 import { catchError, lastValueFrom, of, timeout } from 'rxjs';
+import { Journal } from 'src/app/models/model';
 
 @Component({
   selector: 'app-teacher-journal',
@@ -207,20 +208,23 @@ export class TeacherJournalComponent implements OnInit{
             taskData = {taskName: task.name, taskMark: -1}
           }
         }
-        const students = this.studentsForm.get('students') as FormArray;
-        if (result.studentId == 'all'){
-          for (let i = 0; i < students.length; i++) {
-            const studentGroup = students.at(i) as FormGroup;
-            if (studentGroup){
-              const studentTasksArray = studentGroup.get('studentTasks') as FormArray;
-              studentTasksArray.push(this.fb.group({
-                taskName: [taskData.taskName, Validators.required],
-                taskMark: [taskData.taskMark, [Validators.required, Validators.min(0), Validators.max(5)]]
-              }))
-              
-            }
+        this.studentsData.forEach( (student) => {
+          if (student[3] == this.selectedClass && result.studentId == "all" || result.studentId == student[0]){
+          student[2].push({task_name: taskData.taskName, task_mark: taskData.taskMark})
+          const journal: Journal = {mark: -1, student_login: student[0], id_task: +result.taskId}
+          const response = lastValueFrom(  
+            this.apiService.giveTask(journal).pipe(
+              timeout(5000),
+              catchError(error => {
+                console.error('Couldn\'t give task to a student:', error);
+                return of([])
+              })
+            )
+            )
           }
-        }
+        })
+        console.log('Gave task to student or students')
+        this.showStudents();
       }
     })
   }

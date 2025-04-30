@@ -50,7 +50,7 @@ class Student(Base):
 class Journal(Base):
     __tablename__ = 'journal'
 
-    id_journal = Column(Integer, primary_key=True)
+    id_journal = Column(Integer, primary_key=True, autoincrement=True)
     mark = Column(Integer)
     student_login = Column(String(45), ForeignKey('student.login'))
     id_task = Column(Integer, ForeignKey('task.id_task'))
