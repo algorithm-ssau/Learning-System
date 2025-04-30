@@ -30,6 +30,7 @@ import { CommandBlockComponent } from '../pages/command-block/command-block.comp
 import { EvaluationService } from 'src/services/evaluation.service';
 import { SimulationService } from 'src/services/simulation.service';
 import { RatingComponent } from './pages/rating/rating.component';
+import { NotFoundErrorComponent } from './pages/not-found-error/not-found-error.component';
 
 
 const roots: Routes = [
@@ -40,6 +41,7 @@ const roots: Routes = [
   {path: 'teacherjournal', component: TeacherJournalComponent},
   {path: 'developerinfo', component: DeveloperInfoComponent},
   {path: 'systeminfo', component: SystemInfoComponent},
+  {path: 'notfounderror', component: NotFoundErrorComponent},
   {path: '**', component: AppComponent}
 ]
 
@@ -58,7 +60,8 @@ const roots: Routes = [
     DeveloperInfoComponent,
     SystemInfoComponent,
     CommandBlockComponent,
-    RatingComponent
+    RatingComponent,
+    NotFoundErrorComponent
   ],
   imports: [
     BrowserModule,
