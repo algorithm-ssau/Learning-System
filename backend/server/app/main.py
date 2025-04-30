@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from .database import engine, Base
-from .routes import students, tasks, classes
+from .routes import students, tasks, classes, journal
 from fastapi.middleware.cors import CORSMiddleware
 
 Base.metadata.create_all(bind=engine)
@@ -18,6 +18,7 @@ app.add_middleware(
 app.include_router(classes.router)
 app.include_router(students.router)
 app.include_router(tasks.router)
+app.include_router(journal.router)
 
 @app.get('/')
 def read_root():

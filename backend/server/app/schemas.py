@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 from typing import Optional, List
-from datetime import datetime
 
 class StudentBase(BaseModel):
     login: str
@@ -27,6 +26,14 @@ class StudentCreate(StudentBase):
 
 class TaskCreate(TaskBase):
     pass
+
+class JournalCreate(BaseModel):
+    mark: Optional[int] = None
+    student_login: str
+    id_task: int
+
+    class Config:
+        orm_mode = True
 
 class StudentResponse(StudentBase):
     journals: List['JournalResponse'] = []
