@@ -19,6 +19,7 @@ import { TaskViewComponent } from 'src/pages/task-view/task-view.component';
 import { TaskSolveComponent } from 'src/pages/task-solve/task-solve.component';
 import { TeacherJournalComponent } from '../pages/teacher-journal/teacher-journal.component';
 import { DeveloperInfoComponent } from 'src/pages/developer-info/developer-info.component';
+import { SystemInfoComponent } from 'src/pages/system-info/system-info.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AddStudentDialogComponent } from './dialogs/add-student-dialog/add-student-dialog.component';
 import { GiveTaskDialogComponent } from './dialogs/give-task-dialog/give-task-dialog.component';
@@ -37,6 +38,7 @@ const roots: Routes = [
   {path: 'solve', component: TaskSolveComponent},
   {path: 'teacherjournal', component: TeacherJournalComponent},
   {path: 'developerinfo', component: DeveloperInfoComponent},
+  {path: 'systeminfo', component: SystemInfoComponent},
   {path: '**', component: AppComponent}
 ]
 
@@ -53,6 +55,7 @@ const roots: Routes = [
     DeleteTaskDialogComponent,
     ViewTasksDialogComponent,
     DeveloperInfoComponent,
+    SystemInfoComponent,
     CommandBlockComponent
   ],
   imports: [
