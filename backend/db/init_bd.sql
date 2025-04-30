@@ -31,6 +31,18 @@ CREATE TABLE IF NOT EXISTS `learning_sys_db`.`goal` (
   PRIMARY KEY (`id_goal`))
 ENGINE = InnoDB;
 
+ -- Table `learning_sys_db`.`student`
+ CREATE TABLE IF NOT EXISTS `learning_sys_db`.`student` (
+   `name` VARCHAR(45) NULL,
+   `surname` VARCHAR(45) NULL,
+   `patronymic` VARCHAR(45) NULL,
+   `login` VARCHAR(45) NOT NULL,
+   `password` VARCHAR(45) NOT NULL,
+   `class` VARCHAR(45) NOT NULL,
+   PRIMARY KEY (`login`)
+   )
+ ENGINE = InnoDB;
+
 -- Table `learning_sys_db`.`task`
 CREATE TABLE IF NOT EXISTS `learning_sys_db`.`task` (
   `id_task` INT NOT NULL AUTO_INCREMENT,
@@ -92,4 +104,8 @@ CREATE TABLE IF NOT EXISTS `learning_sys_db`.`solution` (
     REFERENCES `learning_sys_db`.`task` (`id_task`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 ENGINE = InnoDB;
