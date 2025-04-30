@@ -11,14 +11,12 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema learning_sys_db
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `learning_sys_db` DEFAULT CHARACTER SET utf8 ;
+CREATE SCHEMA IF NOT EXISTS `learning_sys_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `learning_sys_db` ;
 
--- -----------------------------------------------------
 -- Table `learning_sys_db`.`game_field`
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `learning_sys_db`.`game_field` (
-  `id_game_field` INT NOT NULL,
+  `id_game_field` INT NOT NULL AUTO_INCREMENT,
   `length` INT NOT NULL,
   `width` INT NOT NULL,
   `layout_array` VARCHAR(1000) NOT NULL,
@@ -26,22 +24,16 @@ CREATE TABLE IF NOT EXISTS `learning_sys_db`.`game_field` (
   PRIMARY KEY (`id_game_field`))
 ENGINE = InnoDB;
 
-
--- -----------------------------------------------------
 -- Table `learning_sys_db`.`goal`
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `learning_sys_db`.`goal` (
-  `id_goal` INT NOT NULL,
+  `id_goal` INT NOT NULL AUTO_INCREMENT,
   `text` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id_goal`))
 ENGINE = InnoDB;
 
-
--- -----------------------------------------------------
 -- Table `learning_sys_db`.`task`
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `learning_sys_db`.`task` (
-  `id_task` INT NOT NULL,
+  `id_task` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `id_game_field` INT NOT NULL,
   `id_goal` INT NOT NULL,
@@ -60,28 +52,10 @@ CREATE TABLE IF NOT EXISTS `learning_sys_db`.`task` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-
--- -----------------------------------------------------
--- Table `learning_sys_db`.`student`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `learning_sys_db`.`student` (
-  `name` VARCHAR(45) NULL,
-  `surname` VARCHAR(45) NULL,
-  `patronymic` VARCHAR(45) NULL,
-  `login` VARCHAR(45) NOT NULL,
-  `password` VARCHAR(45) NOT NULL,
-  `class` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`login`)
-  )
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `learning_sys_db`.`journal`
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `learning_sys_db`.`journal` (
   `mark` INT NULL,
-  `id_journal` INT NOT NULL,
+  `id_journal` INT NOT NULL AUTO_INCREMENT,
   `student_login` VARCHAR(45) NOT NULL,
   `id_task` INT NOT NULL,
   PRIMARY KEY (`id_journal`),
@@ -99,15 +73,12 @@ CREATE TABLE IF NOT EXISTS `learning_sys_db`.`journal` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-
--- -----------------------------------------------------
 -- Table `learning_sys_db`.`solution`
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `learning_sys_db`.`solution` (
   `algorithm` VARCHAR(1000) NULL,
   `student_login` VARCHAR(45) NOT NULL,
   `id_task` INT NOT NULL,
-  `id_solution` VARCHAR(45) NOT NULL,
+  `id_solution` VARCHAR(45) NOT NULL, -- Этот столбец не нуждается в автоинкременте
   PRIMARY KEY (`id_solution`),
   INDEX `fk_solution_student1_idx` (`student_login` ASC) VISIBLE,
   INDEX `fk_solution_task1_idx` (`id_task` ASC) VISIBLE,
@@ -122,8 +93,3 @@ CREATE TABLE IF NOT EXISTS `learning_sys_db`.`solution` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
-
-
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
