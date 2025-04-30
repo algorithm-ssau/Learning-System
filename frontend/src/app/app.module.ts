@@ -29,6 +29,7 @@ import { ViewTasksDialogComponent } from './dialogs/view-tasks-dialog/view-tasks
 import { CommandBlockComponent } from '../pages/command-block/command-block.component';
 import { EvaluationService } from 'src/services/evaluation.service';
 import { SimulationService } from 'src/services/simulation.service';
+import { RatingComponent } from './pages/rating/rating.component';
 
 
 const roots: Routes = [
@@ -56,7 +57,8 @@ const roots: Routes = [
     ViewTasksDialogComponent,
     DeveloperInfoComponent,
     SystemInfoComponent,
-    CommandBlockComponent
+    CommandBlockComponent,
+    RatingComponent
   ],
   imports: [
     BrowserModule,
