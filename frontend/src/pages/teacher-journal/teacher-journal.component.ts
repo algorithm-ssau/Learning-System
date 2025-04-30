@@ -217,6 +217,7 @@ export class TeacherJournalComponent implements OnInit{
                 taskName: [taskData.taskName, Validators.required],
                 taskMark: [taskData.taskMark, [Validators.required, Validators.min(0), Validators.max(5)]]
               }))
+              
             }
           }
         }

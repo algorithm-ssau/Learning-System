@@ -6,3 +6,9 @@ export interface Student {
     class_name: string;
     password: string;
   }
+
+export interface StudentTask {
+  mark: number;
+  student_login: string;
+  id_task: number;
+}

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Student } from 'src/app/models/student.model';
+import { Student, StudentTask } from 'src/app/models/model';
 
 @Injectable({
     providedIn: 'root'
@@ -30,5 +30,9 @@ export class ApiService {
 
     postStudent(student: Student): Observable<any> {
         return this.http.post(`${this.apiUrl}/students`, student)
+    }
+
+    giveTask(studentTask: StudentTask): Observable<any> {
+        return this.http.post(`${this.apiUrl}/`)
     }
 }
