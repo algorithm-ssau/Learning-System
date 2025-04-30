@@ -4,6 +4,7 @@ import { AddStudentDialogComponent } from '../app/dialogs/add-student-dialog/add
 import { GiveTaskDialogComponent } from '../app/dialogs/give-task-dialog/give-task-dialog.component';
 import { AddTaskDialogComponent } from '../app/dialogs/add-task-dialog/add-task-dialog.component';
 import { ViewTasksDialogComponent } from '../app/dialogs/view-tasks-dialog/view-tasks-dialog.component';
+import { DeleteTaskDialogComponent } from '../app/dialogs/delete-task-dialog/delete-task-dialog.component';
 
 @Injectable({
     providedIn: 'root'
@@ -35,6 +36,16 @@ export class DialogService {
 
     openAddTaskDialog() {
         return this.dialog.open(AddTaskDialogComponent, {
+            hasBackdrop: true,
+            disableClose: false,
+            autoFocus: false,
+            backdropClass: 'dialog-backdrop',
+            panelClass: 'centered-dialog',
+          });
+    }
+
+    openDeleteTaskDialog() {
+        return this.dialog.open(DeleteTaskDialogComponent, {
             hasBackdrop: true,
             disableClose: false,
             autoFocus: false,
