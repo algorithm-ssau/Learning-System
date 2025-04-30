@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Student, StudentTask } from 'src/app/models/model';
+import { Student, Journal } from 'src/app/models/model';
 
 @Injectable({
     providedIn: 'root'
@@ -32,7 +32,7 @@ export class ApiService {
         return this.http.post(`${this.apiUrl}/students`, student)
     }
 
-    giveTask(studentTask: StudentTask): Observable<any> {
-        return this.http.post(`${this.apiUrl}/`)
+    giveTask(journal: Journal): Observable<any> {
+        return this.http.post(`${this.apiUrl}/journal`, journal)
     }
 }

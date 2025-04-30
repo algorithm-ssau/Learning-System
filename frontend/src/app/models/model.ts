@@ -7,7 +7,7 @@ export interface Student {
     password: string;
   }
 
-export interface StudentTask {
+export interface Journal {
   mark: number;
   student_login: string;
   id_task: number;
