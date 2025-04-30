@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { GameStateService, GameField, GameElement } from 'src/services/game-state.service';
 import { Router } from '@angular/router';
+import { DialogService } from 'src/services/dialog.service';
+import { EvaluationService } from 'src/services/evaluation.service';
 
 @Component({
   selector: 'app-field-editor',
@@ -10,7 +12,7 @@ import { Router } from '@angular/router';
 })
 export class FieldEditorComponent implements OnInit{
 
-  isNewTask: boolean = true; // По умолчанию считаем, что создаём новое задание
+  isNewTask: boolean = false; // По умолчанию считаем, что создаём новое задание
   editorForm: FormGroup;
   width: number = 10;
   height: number = 10;
@@ -19,9 +21,10 @@ export class FieldEditorComponent implements OnInit{
   collectCoins: boolean = false; // локальная переменная для флага
 
   constructor(
-    private router: Router, 
+    private router: Router,
     private fb: FormBuilder,
-    private gs: GameStateService
+    private gs: GameStateService,
+    private dialogService: DialogService,
   ) {
     this.editorForm = this.fb.group({
       "taskName": new FormControl("", {validators: [Validators.required, Validators.maxLength(30)]}),
@@ -32,29 +35,31 @@ export class FieldEditorComponent implements OnInit{
 
   ngOnInit() {
     this.gameElements = this.gs.getGameElements();
-  
+
     this.gs.getGameField().subscribe((gameData: GameField) => {
       if (gameData.fieldID) {
         this.isNewTask = false;
       }
-  
+
       if (gameData.gameField && gameData.gameField.length) {
         this.gameField = [...gameData.gameField];
       } else {
         this.gameField = Array(gameData.width * gameData.height).fill(-1);
       }
-  
+
       this.editorForm.patchValue({ energy: gameData.energy });
-  
+
       this.collectCoins = gameData.collectCoins;
       this.updateElementCountsFromField();
     });
   }
-
+  deleteTask(){
+    this.dialogService.openDeleteTaskDialog();
+  }
   private updateElementCountsFromField(): void {
     // Обнуляем сначала все счётчики
     this.gameElements.forEach(element => element.count = 0);
-  
+
     // Проходим по каждой клетке поля
     for (const cell of this.gameField) {
       if (cell !== -1) {
@@ -87,7 +92,7 @@ export class FieldEditorComponent implements OnInit{
     return {
       'grid-template-columns': `repeat(${this.width}, 60px)`,
       'grid-template-rows': `repeat(${this.height}, 60px)`
-    };
+    }
   }
 
   getElementStyle() {
@@ -105,26 +110,26 @@ export class FieldEditorComponent implements OnInit{
 
   onDrop(event: DragEvent, targetIndex: number) {
     event.preventDefault(); // обязательно!
-  
+
     // Читаем индекс перетаскиваемого элемента
     const elementIndex = parseInt(event.dataTransfer?.getData('text/plain') || '-1', 10);
-  
+
     if (elementIndex === -1) return; // если не нашли индекс
-  
+
     const draggedElement = this.gameElements.find(e => e.index === elementIndex);
-  
+
     if (!draggedElement) return; // если элемент не найден
-  
+
     // Ограничение: нельзя ставить монету, если сбор монет отключён
     if (draggedElement.name === 'Coin' && !this.collectCoins) {
       console.warn('Сбор монет отключён — нельзя добавить монету.');
       return; // ПРЕКРАЩАЕМ операцию
     }
-  
+
     // Проверка лимита элементов
     if (draggedElement.count < draggedElement.max) {
       const oldElementIndex = this.gameField[targetIndex];
-  
+
       // Если на клетке уже что-то стояло, уменьшаем его count
       if (oldElementIndex !== -1) {
         const oldElement = this.gameElements.find(e => e.index === oldElementIndex);
@@ -132,7 +137,7 @@ export class FieldEditorComponent implements OnInit{
           oldElement.count--;
         }
       }
-  
+
       // Ставим новый элемент на игровое поле
       this.gameField[targetIndex] = draggedElement.index;
       draggedElement.count++;
@@ -157,20 +162,17 @@ export class FieldEditorComponent implements OnInit{
         gameField: this.gameField,
         collectCoins: this.collectCoins
       };
-  
+
       this.gs.newGameFieldId(baseField as GameField, this.isNewTask)
         .subscribe((gfWithId: GameField) => {
           this.gs.sendGameField(gfWithId).subscribe(() => {
             alert('Игровое поле сохранено!');
           });
         });
-  
+
     } else {
       alert('Форма заполнена некорректно!');
     }
   }
-
-  deleteTask(){
-
-  }
 }
+

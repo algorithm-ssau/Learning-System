@@ -22,6 +22,7 @@ import { DeveloperInfoComponent } from 'src/pages/developer-info/developer-info.
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AddStudentDialogComponent } from './dialogs/add-student-dialog/add-student-dialog.component';
 import { GiveTaskDialogComponent } from './dialogs/give-task-dialog/give-task-dialog.component';
+import { DeleteTaskDialogComponent } from './dialogs/delete-task-dialog/delete-task-dialog.component';
 import { AddTaskDialogComponent } from './dialogs/add-task-dialog/add-task-dialog.component';
 import { ViewTasksDialogComponent } from './dialogs/view-tasks-dialog/view-tasks-dialog.component';
 import { CommandBlockComponent } from '../pages/command-block/command-block.component';
@@ -49,6 +50,7 @@ const roots: Routes = [
     AddStudentDialogComponent,
     GiveTaskDialogComponent,
     AddTaskDialogComponent,
+    DeleteTaskDialogComponent,
     ViewTasksDialogComponent,
     DeveloperInfoComponent,
     CommandBlockComponent
