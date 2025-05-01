@@ -35,4 +35,8 @@ export class ApiService {
     giveTask(journal: Journal): Observable<any> {
         return this.http.post(`${this.apiUrl}/journal`, journal)
     }
+
+    deleteStudentTask(studentLogin: string, taskId: number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/journal/${studentLogin}/${taskId}`);
+    }
 }

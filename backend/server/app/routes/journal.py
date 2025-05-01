@@ -29,3 +29,24 @@ def give_task(journal: schemas.JournalCreate, db: Session = Depends(get_db)):
             status_code=500,
             detail=f'Error posting journal statisctic: {str(e)}'
         )
+
+@router.delete("/{student_login}/{task_id}")
+def delete_task(student_login: str, task_id: int, db: Session = Depends(get_db)):
+    try:
+        journal_entry = db.query(models.Journal).filter(
+            models.Journal.student_login == student_login,
+            models.Journal.id_task == task_id
+        ).first()
+
+        if not journal_entry:
+            raise HTTPException(status_code=404, detail="Task not found for this student")
+        
+        db.delete(journal_entry)
+        db.commit()
+
+        return {"message": "Task successfully deleted from student"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        db.close()

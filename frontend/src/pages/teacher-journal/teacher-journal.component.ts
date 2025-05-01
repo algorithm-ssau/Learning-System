@@ -60,14 +60,15 @@ export class TeacherJournalComponent implements OnInit{
     });
   }
 
-  private createStudent(studentName: string, studentTasks: { task_name: string; task_mark: number }[]): FormGroup {
+  private createStudent(studentName: string, studentTasks: { task_name: string; task_mark: number ; id_task: number}[]): FormGroup {
     return this.fb.group({
       studentName: [studentName, [Validators.required, Validators.maxLength(20)]],
       studentTasks: this.fb.array(
         studentTasks.map(task => 
           this.fb.group({
             taskName: [task.task_name, Validators.required],
-            taskMark: [task.task_mark, [Validators.required, Validators.min(0), Validators.max(5)]]
+            taskMark: [task.task_mark, [Validators.required, Validators.min(-1), Validators.max(5)]],
+            idTask: [task.id_task],
           })
         ),
         [Validators.required]
@@ -318,7 +319,6 @@ export class TeacherJournalComponent implements OnInit{
               })
             )
           );
-          
           student[2] = tasks;
         } catch (error) {
           student[2] = [];
@@ -330,5 +330,31 @@ export class TeacherJournalComponent implements OnInit{
     } catch (error) {
       console.error('Global task load error:', error);
     }
+  }
+  async deleteStudentTask(studentIndex: number, taskIndex: number, event: Event) {
+    event.stopPropagation();
+
+    const student = this.students.at(studentIndex);
+    const studentLogin = this.studentsData[studentIndex][0];
+    const tasksArray = student.get('studentTasks') as FormArray;
+    const taskId = tasksArray.at(taskIndex).get('idTask')?.value;
+
+    try {
+      tasksArray.removeAt(taskIndex);
+
+      await lastValueFrom(
+        this.apiService.deleteStudentTask(studentLogin, taskId).pipe(
+          timeout(5000),
+          catchError(error => {
+            console.error('Delete failed:', error);
+            return of(null);
+          })
+        )
+      )
+      console.log('Task deleted from student successfully');
+    } catch (error) {
+      console.error('Error deleting task from student:', error);
+    }
+    
   }
 }
