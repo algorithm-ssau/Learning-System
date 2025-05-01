@@ -27,15 +27,16 @@ def read_students(skip: int = 0, limit: int = 100000, db: Session = Depends(get_
 @router.get("/{login}/tasks", response_model=List[dict])
 def get_student_tasks(login: str, db: Session = Depends(get_db)):
     tasks = db.query(
+        models.Task.id_task.label("id_task"),
         models.Task.name.label("task_name"),
-        models.Journal.mark.label("task_mark")
+        models.Journal.mark.label("task_mark"),
     ).join(
         models.Journal,
         models.Journal.id_task == models.Task.id_task
     ).filter(
         models.Journal.student_login == login
     ).all()
-    return [{"task_name": task.task_name, "task_mark": task.task_mark} for task in tasks]
+    return [{"task_name": task.task_name, "task_mark": task.task_mark, "id_task": task.id_task} for task in tasks]
 
 @router.get('/{login}', response_model=schemas.StudentResponse)
 def read_student(login: str, db: Session = Depends(get_db)):

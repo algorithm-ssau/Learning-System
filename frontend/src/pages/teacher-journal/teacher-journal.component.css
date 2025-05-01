@@ -20,6 +20,8 @@
   width: 65%;
   height: 80vh;
   margin-top: 5vh;
+  border: 1px solid #000000;
+  border-style: dashed;
 }
 .form-wrapper {
   flex: 1;
@@ -43,7 +45,6 @@
   height: 90vh;
   display: flex;
   flex-direction: column;
-  background: white;
   border-radius: 12px;
 }
 .student-name {
@@ -71,7 +72,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px 0;
+  padding: 5px 0;
 }
 .tasks {
   text-align: center;
@@ -79,16 +80,47 @@
   scrollbar-width: thin;
 }
 .task {
+  position: relative;
   height: auto;
   min-height: 30px;
   width: 90%;
   border: 1px solid #000000;
+  background-color: #ffffff;
   border-radius: 8px;
   box-sizing: border-box;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.task-delete-button {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 15px;
+  height: 15px;
+  background: #dddddd;
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  z-index: 10;
+  opacity: 1;
+  font-size: 9px;
+  transition: opacity 0.2s ease;
+}
+
+.task-delete-button:hover {
+  background: #bb7777;
+  top: -3px;
+  left: -3px;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
 }
 .task-name {
   flex: 1;
@@ -102,7 +134,7 @@
   word-break: break-word;
 }
 .task-grade {
-  width: 30px;
+  width: 35px;
   flex-shrink: 0;
   display: flex;
   align-items: center;

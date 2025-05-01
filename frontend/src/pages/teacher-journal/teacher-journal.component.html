@@ -24,7 +24,7 @@
           [(ngModel)]="newClassName"
           [ngModelOptions]="{standalone: true}">
 
-        <button class="add-button" (click)="addClass()">
+        <button class="add-button" (click)="addClass()" type="button">
           Добавить класс +
         </button>
         
@@ -48,6 +48,9 @@
             <div *ngFor="let taskControl of getStudentTasks(student).controls; let j = index"
                  class="student-tasks">
               <div class="task">
+                <button class="task-delete-button" (click)="deleteStudentTask(i, j, $event)">
+                  ❌
+                </button>
                 <div class="task-name">{{ taskControl.value.taskName }}</div>
                 <div class="task-grade" 
                   [class.unsolved]="taskControl.value.taskMark === 0"
