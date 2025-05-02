@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Student, Journal } from 'src/app/models/model';
+import { Student, Journal, StudentTask } from 'src/app/models/model';
 
 @Injectable({
     providedIn: 'root'
@@ -20,8 +20,8 @@ export class ApiService {
         return this.http.get(`${this.apiUrl}/students`);
     }
 
-    getStudentTasks(login: string): Observable<any> {
-        return this.http.get(`${this.apiUrl}/students/${login}/tasks`)
+    getStudentTasks(login: string): Observable<StudentTask[]> {
+        return this.http.get<StudentTask[]>(`${this.apiUrl}/students/${login}/tasks`)
     }
 
     getAllTasks(): Observable<any> {

@@ -53,8 +53,8 @@
                 </button>
                 <div class="task-name">{{ taskControl.value.taskName }}</div>
                 <div class="task-grade" 
-                  [class.unsolved]="taskControl.value.taskMark === 0"
-                  [class.solved]="taskControl.value.taskMark === -1"
+                  [class.unsolved]="taskControl.value.taskMark === -1"
+                  [class.solved]="taskControl.value.taskMark === 0"
                   [class.grade-2]="taskControl.value.taskMark === 2"
                   [class.grade-3]="taskControl.value.taskMark === 3"
                   [class.grade-4]="taskControl.value.taskMark === 4"

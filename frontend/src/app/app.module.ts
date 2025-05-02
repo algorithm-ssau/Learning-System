@@ -9,7 +9,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { PortalModule } from '@angular/cdk/portal';
 import { AppRoutingModule } from './app-routing.module';
 import { RouterModule, Routes } from '@angular/router';
 import { GameStateService } from 'src/services/game-state.service';
@@ -31,6 +30,7 @@ import { EvaluationService } from 'src/services/evaluation.service';
 import { SimulationService } from 'src/services/simulation.service';
 import { RatingComponent } from '../pages/rating/rating.component';
 import { NotFoundErrorComponent } from '../pages/not-found-error/not-found-error.component';
+import { StudentJournalComponent } from '../pages/student-journal/student-journal.component';
 
 
 const roots: Routes = [
@@ -39,6 +39,7 @@ const roots: Routes = [
   {path: 'view', component: TaskViewComponent},
   {path: 'solve', component: TaskSolveComponent},
   {path: 'teacherjournal', component: TeacherJournalComponent},
+  {path: 'studentjournal', component: StudentJournalComponent},
   {path: 'developerinfo', component: DeveloperInfoComponent},
   {path: 'systeminfo', component: SystemInfoComponent},
   {path: 'notfounderror', component: NotFoundErrorComponent},
@@ -61,7 +62,8 @@ const roots: Routes = [
     SystemInfoComponent,
     CommandBlockComponent,
     RatingComponent,
-    NotFoundErrorComponent
+    NotFoundErrorComponent,
+    StudentJournalComponent
   ],
   imports: [
     BrowserModule,

@@ -12,3 +12,15 @@ export interface Journal {
   student_login: string;
   id_task: number;
 }
+
+export interface StudentTask {
+  task_name: string;
+  task_mark: number;
+  id_task: number;
+}
+
+export interface ApiResponse<T> {
+  data: T;
+  success: boolean;
+  message?: string;
+}
