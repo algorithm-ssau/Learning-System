@@ -1,0 +1,124 @@
+#blue-box {
+    background: #CCEBFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-color: #000000;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 8px;
+}
+
+.container {
+    display: flex;
+}
+
+.left-panel {
+    width: 80vw;
+    padding: 15px;
+    margin: 35px;
+    border-color: #000000;
+    border-style: dashed;
+    border-width: 1px;
+    border-radius: 12px;
+}
+
+.rating-header {
+    display: flex;
+    padding: 0px 15px;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.place, .student-name, .homework-count, .average-mark, .rating-value {
+    flex: 0 1 auto;
+    width: 250px;
+    height: auto;
+    padding: 10px;
+    box-sizing: border-box;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    text-align: center;
+}
+
+.student-name {
+
+}
+
+.homework-count {
+
+}
+
+.average-mark {
+
+}
+
+.students-form-wrapper {
+}
+
+.students {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    gap:20px;
+    padding:15px;
+    height:70vh;
+    scrollbar-width: thin;
+
+    border-color: #000000;
+    border-style: dashed;
+    border-width: 1px;
+    border-radius: 12px;
+}
+
+.student-entry {
+    
+}
+
+.student {
+    display: flex;
+    justify-content: space-between;
+    border-color: #000000;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 8px;
+    background: #CCEBFF;
+}
+
+.rating-value {
+    flex: 0 1 auto;
+    width: 250px;
+    height: auto;
+    padding: 10px;
+    box-sizing: border-box;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    text-align: center;
+
+}
+
+.right-panel {
+    width: 20vw;
+    padding: 15px;
+    margin: 35px 35px 35px 0px;
+}
+
+.journal-button {
+    background-color: #D9D9D9;
+    width: 100%;
+    height: auto;
+    min-height: 50px;
+    font-size: 20px;
+    border-width: 0px;
+    border-radius: 100px;
+    cursor: pointer;
+}
+
+.class-name {
+    height: auto;
+    min-height: 50px;
+    font-size: 35px;
+    margin-top: 35vh;
+}

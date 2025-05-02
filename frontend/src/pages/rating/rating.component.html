@@ -1,1 +1,30 @@
-<p>rating works!</p>
+<div class="container">
+    <!-- Левая колонка: рейтинг класса -->
+    <div class="left-panel">
+        <div class="rating-header">
+            <div class="place" id="blue-box">Место</div>
+            <div class="student-name" id="blue-box">Имя ученика</div>
+            <div class="homework-count" id="blue-box">Количество выполненных ДЗ</div>
+            <div class="average-mark" id="blue-box">Средняя оценка</div>
+        </div>
+        <div [formGroup]="studentsForm" class="students-form-wrapper">
+            <div formArrayName="students" class="students">
+                <div *ngFor="let studentGroup of students.controls; let i = index"
+                    [formGroupName]="i"
+                    class="student-entry">
+                    <div class="student">
+                        <div class="rating-value">{{ studentGroup.get('place')?.value }}</div>
+                        <div class="rating-value">{{ studentGroup.get('name')?.value }}</div>
+                        <div class="rating-value">{{ studentGroup.get('homeworkCount')?.value }}</div>
+                        <div class="rating-value">{{ studentGroup.get('averageMark')?.value }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Боковая правая панель: информация о классе и кнопка назад -->
+    <div class="right-panel">
+        <button class="journal-button" (click)="goToJournal()">↩️ Вернуться к журналу</button>
+        <div class="class-name" id="blue-box">Рейтинг {{ currentClass }}</div>
+    </div>
+</div>
