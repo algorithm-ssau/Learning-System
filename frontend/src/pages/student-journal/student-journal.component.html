@@ -1,0 +1,56 @@
+<div class="container">
+    <!-- Левая колонка: меню заданий ученика -->
+    <div class="left-panel">
+        <div class="rating">
+            <div class="rating-header">
+                <div class="place" id="blue-box">Место</div>
+                <div class="homework-count" id="blue-box">Количество выполненных ДЗ</div>
+                <div class="average-mark" id="blue-box">Средняя оценка</div>
+            </div>
+            <div [formGroup]="ratingsForm" class="ratings-form-wrapper">
+                <div formArrayName="ratings" class="rating-stats" id="blue-box">
+                    <div *ngFor="let ratingStat of ratings.controls; let i = index"
+                    [formGroupName]="i"
+                    class="rating-entry">
+                        <div class="rating-value">{{ ratingStat.value }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div [formGroup]="tasksForm" class="tasks-form-wrapper">
+            <div formArrayName="tasks" class="tasks">
+                <div *ngFor="let taskControl of tasks.controls; let i = index"
+                [formGroupName]="i"
+                class="task-entry">
+                    <div class="task">
+                        <div class="task-name">
+                            {{ taskControl.value.taskName }}
+                        </div>
+                        <div class="task-grade" 
+                        [class.unsolved]="taskControl.value.taskMark === -1"
+                        [class.solved]="taskControl.value.taskMark === 0"
+                        [class.grade-2]="taskControl.value.taskMark === 2"
+                        [class.grade-3]="taskControl.value.taskMark === 3"
+                        [class.grade-4]="taskControl.value.taskMark === 4"
+                        [class.grade-5]="taskControl.value.taskMark === 5">
+                        {{ taskControl.value.taskMark > 1 ? taskControl.value.taskMark : '' }}
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Боковая правая панель: информация об ученике и справки -->
+    <div class="right-panel">
+        <div class="student-info">
+            <div class="student-name" id="blue-box">{{ studentName }}</div>
+            <div class="student-class" id="blue-box">{{ studentClass }}</div>
+        </div>
+        <button class="rating-button" (click)="goToRating()" id="blue-box">Посмотреть рейтинг класса</button>
+        <div class="info-buttons">
+            <button class="system-info-button" (click)="goToSystemInfo()" id="blue-box">Посмотреть справку о системе</button>
+            <button class="developer-info-button" (click)="goToDeveloperInfo()" id="blue-box">Посмотреть справку о разработчиках</button>
+        </div>
+        <button class="quit-button" (click)="Exit()" id="blue-box">Выход</button>
+    </div>
+</div>
