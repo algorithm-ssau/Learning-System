@@ -12,8 +12,8 @@ import { ApiService } from 'src/services/api.service';
 export class StudentJournalComponent {
   ratingsForm: FormGroup;
   tasksForm: FormGroup;
-  tasksData: any[] = []
-  studentsData: any[] = []
+  tasksData: any[] = [];
+  studentsData: any[] = [];
   studentName: string = "Тестовый поц";
   studentClass: string = "10A";
   studentLogin: string = "student10A1";
@@ -101,10 +101,6 @@ export class StudentJournalComponent {
   }
 
   async loadAllStudentsTasks(): Promise<void> {
-    if (!this.studentsData.length) {
-      console.warn('No students to load tasks for');
-      return;
-    }
     try {
       for (const student of this.studentsData) {
         const login = student[0];

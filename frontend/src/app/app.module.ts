@@ -43,7 +43,8 @@ const roots: Routes = [
   {path: 'developerinfo', component: DeveloperInfoComponent},
   {path: 'systeminfo', component: SystemInfoComponent},
   {path: 'notfounderror', component: NotFoundErrorComponent},
-  {path: '**', component: AppComponent}
+  {path: 'rating', component: RatingComponent},
+  {path: '**', component: AppComponent},
 ]
 
 @NgModule({
