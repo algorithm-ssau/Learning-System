@@ -233,7 +233,11 @@ export class TeacherJournalComponent implements OnInit{
   }
 
   openViewTasks() {
-    this.dialogService.openViewTaskDialog();
+    const dialogRef = this.dialogService.openViewTaskDialog({
+      tasksData: this.tasksData,
+    });
+
+    //dialogRef.afterClosed.subscribe(result => {})
   }
 
   async loadClasses(): Promise<void> {

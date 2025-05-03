@@ -10,40 +10,9 @@
         <div class="modal-content">
             <h2>Список созданных заданий</h2>
             <div class="d-flex flex-wrap-wrap">
-                <button class="button-task">Собрать 5 монет</button>
-                <button class="button-task">Собрать 3 монеты и <br> заполнить все лунки</button>
-                <button class="button-task">Заполнить 10 лунок</button>
-                <button class="button-task">Собрать все монеты</button>
-                <button class="button-task">Собрать 5 монет</button>
-                <button class="button-task">Собрать 3 монеты и <br> заполнить все лунки</button>
-                <button class="button-task">Заполнить 10 лунок</button>
-                <button class="button-task">Собрать все монеты</button>
-                <button class="button-task">Собрать 5 монет</button>
-                <button class="button-task">Собрать 3 монеты и <br> заполнить все лунки</button>
-                <button class="button-task">Заполнить 10 лунок</button>
-                <button class="button-task">Собрать все монеты</button>
-                <button class="button-task">Собрать 5 монет</button>
-                <button class="button-task">Собрать 3 монеты и <br> заполнить все лунки</button>
-                <button class="button-task">Заполнить 10 лунок</button>
-                <button class="button-task">Собрать все монеты</button>
-                <button class="button-task">Собрать 5 монет</button>
-                <button class="button-task">Собрать 3 монеты и <br> заполнить все лунки</button>
-                <button class="button-task">Заполнить 10 лунок</button>
-                <button class="button-task">Собрать все монеты</button>
-                <button class="button-task">Собрать 5 монет</button>
-                <button class="button-task">Собрать 3 монеты и <br> заполнить все лунки</button>
-                <button class="button-task">Заполнить 10 лунок</button>
-                <button class="button-task">Собрать все монеты</button>
-                <button class="button-task">Собрать 5 монет</button>
-                <button class="button-task">Собрать 3 монеты и <br> заполнить все лунки</button>
-                <button class="button-task">Заполнить 10 лунок</button>
-                <button class="button-task">Собрать все монеты</button>
-                <button class="button-task">Собрать 5 монет</button>
-                <button class="button-task">Собрать 3 монеты и <br> заполнить все лунки</button>
-                <button class="button-task">Заполнить 10 лунок</button>
-                <button class="button-task">Собрать все монеты</button>
+                <button *ngFor="let task of data.tasksData" class="button-task">{{ task.task_name || task.name }}</button>
             </div>
-            <button class="close-btn" onclick="closeModal('list-task-modal')">Закрыть</button>
+            <button class="close-btn" (click)="onCancel()">Закрыть</button>
         </div>
     </div>
 
