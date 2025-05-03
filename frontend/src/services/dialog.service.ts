@@ -54,8 +54,10 @@ export class DialogService {
           });
     }
 
-    openViewTaskDialog() {
+    openViewTaskDialog(data: any): MatDialogRef<ViewTasksDialogComponent> {
         return this.dialog.open(ViewTasksDialogComponent, {
+            data: data,
+            width: '80vw',
             hasBackdrop: true,
             disableClose: false,
             autoFocus: false,
