@@ -31,10 +31,11 @@ import { SimulationService } from 'src/services/simulation.service';
 import { RatingComponent } from '../pages/rating/rating.component';
 import { NotFoundErrorComponent } from '../pages/not-found-error/not-found-error.component';
 import { StudentJournalComponent } from '../pages/student-journal/student-journal.component';
+import { AuthorizationComponent } from '../pages/authorization/authorization.component';
 
 
 const roots: Routes = [
-  {path: '', component: AppComponent}, // Заменить авторизацией
+  {path: '', component: AuthorizationComponent}, // Заменить авторизацией
   {path: 'editor', component: FieldEditorComponent},
   {path: 'view', component: TaskViewComponent},
   {path: 'solve', component: TaskSolveComponent},
@@ -64,7 +65,8 @@ const roots: Routes = [
     CommandBlockComponent,
     RatingComponent,
     NotFoundErrorComponent,
-    StudentJournalComponent
+    StudentJournalComponent,
+    AuthorizationComponent
   ],
   imports: [
     BrowserModule,
