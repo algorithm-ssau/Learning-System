@@ -1,38 +1,24 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+// developer-info.component.ts
 import { Component, OnInit } from '@angular/core';
-
-
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-developer-info',
   templateUrl: './developer-info.component.html',
   styleUrls: ['./developer-info.component.css']
 })
-
 export class DeveloperInfoComponent implements OnInit {
-  constructor(
+  constructor(private location: Location) {}
 
+  ngOnInit(): void {}
 
-
-
-
-  ) {}
-
-  ngOnInit(): void {
-
+  /**
+   * Перейти на предыдущую страницу в истории браузера
+   */
+  goBack(): void {
+    this.location.back();
   }
 }
-
-// Функция для обработки событий на странице (можно расширять по мере необходимости)
-document.addEventListener("DOMContentLoaded", () => {
-    const backButton = document.querySelector("button") as HTMLButtonElement;
-
-    // Обработчик нажатия на кнопку "Назад"
-    backButton.addEventListener("click", () => {
-        window.history.back(); // Возвращаемся на предыдущую страницу
-    });
-});
 
 
 

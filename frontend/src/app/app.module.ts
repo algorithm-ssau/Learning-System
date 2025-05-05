@@ -32,6 +32,7 @@ import { RatingComponent } from '../pages/rating/rating.component';
 import { NotFoundErrorComponent } from '../pages/not-found-error/not-found-error.component';
 import { StudentJournalComponent } from '../pages/student-journal/student-journal.component';
 import { AuthorizationComponent } from '../pages/authorization/authorization.component';
+import { SystemInfoTeacherComponent } from '../pages/system-info-teacher/system-info-teacher.component';
 
 
 const roots: Routes = [
@@ -43,6 +44,7 @@ const roots: Routes = [
   {path: 'studentjournal', component: StudentJournalComponent},
   {path: 'developerinfo', component: DeveloperInfoComponent},
   {path: 'systeminfo', component: SystemInfoComponent},
+  {path: 'systeminfoteacher', component: SystemInfoTeacherComponent},
   {path: 'notfounderror', component: NotFoundErrorComponent},
   {path: 'rating', component: RatingComponent},
   {path: '**', component: AppComponent},
@@ -66,7 +68,8 @@ const roots: Routes = [
     RatingComponent,
     NotFoundErrorComponent,
     StudentJournalComponent,
-    AuthorizationComponent
+    AuthorizationComponent,
+    SystemInfoTeacherComponent
   ],
   imports: [
     BrowserModule,

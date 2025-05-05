@@ -21,7 +21,7 @@ export class TeacherJournalComponent implements OnInit{
   classesData: any[] = [];
   tasksData: any[] = [];
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
 
     private router: Router,
     private dialogService: DialogService,
@@ -41,7 +41,7 @@ export class TeacherJournalComponent implements OnInit{
     await this.loadAllTasks();
     this.showClasses();
     const classesArray = this.classesForm.get('classes') as FormArray;
-    this.selectedClass = classesArray.length > 0 
+    this.selectedClass = classesArray.length > 0
       ? classesArray.at(0).get('className')?.value || ''
       : '';
     if (this.classes.length > 0) {
@@ -62,7 +62,7 @@ export class TeacherJournalComponent implements OnInit{
     return this.fb.group({
       studentName: [studentName, [Validators.required, Validators.maxLength(20)]],
       studentTasks: this.fb.array(
-        studentTasks.map(task => 
+        studentTasks.map(task =>
           this.fb.group({
             taskName: [task.task_name, Validators.required],
             taskMark: [task.task_mark, [Validators.required, Validators.min(-1), Validators.max(5)]],
@@ -99,7 +99,7 @@ export class TeacherJournalComponent implements OnInit{
   selectClass(className: string, index: number): void {
     this.selectedClass = className;
     this.selectedClassIndex = index;
-    this.showStudents(); 
+    this.showStudents();
   }
 
   isClassSelected(index: number): boolean {
@@ -133,7 +133,7 @@ export class TeacherJournalComponent implements OnInit{
     this.router.navigate(['/rating']);
   }
   goToSystemInfo(): void {
-    this.router.navigate(['/systeminfo']);
+    this.router.navigate(['/systeminfoteacher']);
   }
   goToDeveloperInfo(): void {
     this.router.navigate(['/developerinfo'])
@@ -158,10 +158,10 @@ export class TeacherJournalComponent implements OnInit{
         this.studentsData.push([result.login, result.name, [], this.selectedClass])
         this.increaseClassStudentCount(this.selectedClass);
         const student = {
-          login: result.login, 
-          name: result.name.split(" ")[0], 
-          surname: result.name.split(" ")[1], 
-          patronymic: result.name.split(" ")[2], 
+          login: result.login,
+          name: result.name.split(" ")[0],
+          surname: result.name.split(" ")[1],
+          patronymic: result.name.split(" ")[2],
           class_name: this.selectedClass,
           password: result.password,
         }
@@ -181,7 +181,7 @@ export class TeacherJournalComponent implements OnInit{
 
   private increaseClassStudentCount(className: string): void {
     const classesArray = this.classesForm.get('classes') as FormArray;
-    
+
     for (let i = 0; i < classesArray.length; i++) {
       const classGroup = classesArray.at(i) as FormGroup;
       if (classGroup.get('className')?.value === className) {
@@ -198,7 +198,7 @@ export class TeacherJournalComponent implements OnInit{
       tasksData: this.tasksData,
       studentsData: this.studentsData.filter(s => s[3] === this.selectedClass)
     })
-    
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         let taskData = {taskName: '', taskMark: -1};
@@ -211,7 +211,7 @@ export class TeacherJournalComponent implements OnInit{
           if (student[3] == this.selectedClass && result.studentId == "all" || result.studentId == student[0]){
           student[2].push({task_name: taskData.taskName, task_mark: taskData.taskMark})
           const journal: Journal = {mark: -1, student_login: student[0], id_task: +result.taskId}
-          const response = lastValueFrom(  
+          const response = lastValueFrom(
             this.apiService.giveTask(journal).pipe(
               timeout(5000),
               catchError(error => {
@@ -279,14 +279,14 @@ export class TeacherJournalComponent implements OnInit{
         [],
         student.class_name,
       ]);
-      
+
       console.log('Students loaded:', this.studentsData);
     } catch (error) {
       console.error('Failed to load students:', error);
       this.studentsData = [];
     }
   }
-  
+
   async loadAllTasks(): Promise<void> {
     try {
     const tasks = await lastValueFrom(
@@ -302,12 +302,12 @@ export class TeacherJournalComponent implements OnInit{
 
   async loadAllStudentsTasks(): Promise<void> {
     console.log('Starting task load', this.studentsData);
-    
+
     if (!this.studentsData.length) {
       console.warn('No students to load tasks for');
       return;
     }
-  
+
     try {
       for (const student of this.studentsData) {
         const login = student[0];
@@ -327,7 +327,7 @@ export class TeacherJournalComponent implements OnInit{
           console.error(`Critical error for ${login}:`, error);
         }
       }
-      
+
       console.log('Final student data:', this.studentsData);
     } catch (error) {
       console.error('Global task load error:', error);
@@ -357,6 +357,6 @@ export class TeacherJournalComponent implements OnInit{
     } catch (error) {
       console.error('Error deleting task from student:', error);
     }
-    
+
   }
 }

@@ -27,12 +27,10 @@ export class SystemInfoComponent implements OnInit {
   }
 
 
-
   // Метод для прокрутки страницы наверх
   backToTop(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-
 
 
   // Слушаем событие прокрутки страницы и показываем/скрываем кнопку "Наверх"
