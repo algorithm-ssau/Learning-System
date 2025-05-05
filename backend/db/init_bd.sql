@@ -90,8 +90,7 @@ CREATE TABLE IF NOT EXISTS `learning_sys_db`.`solution` (
   `algorithm` VARCHAR(1000) NULL,
   `student_login` VARCHAR(45) NOT NULL,
   `id_task` INT NOT NULL,
-  `id_solution` VARCHAR(45) NOT NULL, -- Этот столбец не нуждается в автоинкременте
-  PRIMARY KEY (`id_solution`),
+  PRIMARY KEY (`student_login`, `id_task`),
   INDEX `fk_solution_student1_idx` (`student_login` ASC) VISIBLE,
   INDEX `fk_solution_task1_idx` (`id_task` ASC) VISIBLE,
   CONSTRAINT `fk_solution_student1`
@@ -103,7 +102,8 @@ CREATE TABLE IF NOT EXISTS `learning_sys_db`.`solution` (
     FOREIGN KEY (`id_task`)
     REFERENCES `learning_sys_db`.`task` (`id_task`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+) ENGINE = InnoDB;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
