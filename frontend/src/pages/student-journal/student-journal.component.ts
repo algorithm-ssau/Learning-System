@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, FormArray, AbstractControl, Validators } from '
 import { Router } from '@angular/router';
 import { catchError, lastValueFrom, of, timeout } from 'rxjs';
 import { ApiService } from 'src/services/api.service';
+import { AuthService } from 'src/services/auth.service';
 
 @Component({
   selector: 'app-student-journal',
@@ -21,6 +22,7 @@ export class StudentJournalComponent {
     private fb: FormBuilder,
     private router: Router,
     private apiService: ApiService,
+    private authService: AuthService,
   ) {
     this.ratingsForm = this.fb.group({
       ratings: this.fb.array([])
@@ -31,6 +33,12 @@ export class StudentJournalComponent {
   }
 
   async ngOnInit() {
+    this.authService.login$.subscribe(login => {
+      if (login != null) {
+        this.studentLogin = login;
+      }
+    })
+    await this.loadStudent();
     await this.loadStudentTasks();
     await this.loadClassmates();
     await this.loadAllStudentsTasks();
@@ -43,6 +51,25 @@ export class StudentJournalComponent {
 
   get tasks(): FormArray {
     return this.tasksForm.get('tasks') as FormArray;
+  }
+
+  async loadStudent(): Promise<void> {
+    try {
+    const student = await lastValueFrom(
+      this.apiService.getStudent(this.studentLogin).pipe(
+        timeout(3000),
+        catchError(error => {
+          console.error("Student load failed", error);
+          return of([]);
+        })
+      )
+    );
+    console.log(student, 'тест')
+    this.studentName = student.name;
+    this.studentClass = student.class_name;
+    } catch (error) {
+    console.error('Critical error when loading student', error);
+    }
   }
 
   async loadStudentTasks(): Promise<void> {
@@ -156,6 +183,7 @@ export class StudentJournalComponent {
     this.router.navigate(['/developerinfo'])
   }
   Exit(): void {
+    this.authService.logout();
     this.router.navigate([''])
   }
 

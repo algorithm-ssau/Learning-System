@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import func
 from sqlalchemy.orm import Session
+
+from ..auth import require_teacher
 from .. import schemas, models
 from ..database import get_db
 from ..models import Student
@@ -8,7 +10,7 @@ from ..models import Student
 router = APIRouter(prefix='/classes', tags=['classes'])
 
 @router.get('/', response_model=list[dict])
-async def get_class_statistics(db: Session = Depends(get_db)):
+async def get_class_statistics(db: Session = Depends(get_db), _ = Depends(require_teacher)):
     try:
         class_stats = db.query(
             Student.class_name,

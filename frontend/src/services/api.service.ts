@@ -20,6 +20,10 @@ export class ApiService {
         return this.http.get(`${this.apiUrl}/students`);
     }
 
+    getStudent(login: string): Observable<any> {
+        return this.http.get(`${this.apiUrl}/students/${login}`)
+    }
+
     getStudentTasks(login: string): Observable<StudentTask[]> {
         return this.http.get<StudentTask[]>(`${this.apiUrl}/students/${login}/tasks`)
     }

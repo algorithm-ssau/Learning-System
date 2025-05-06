@@ -1,6 +1,9 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from .database import Base
 from sqlalchemy.orm import relationship
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated='auto')
 
 class GameField(Base):
     __tablename__ = 'game_field'
@@ -41,11 +44,14 @@ class Student(Base):
     name = Column(String(45))
     surname = Column(String(45))
     patronymic = Column(String(45))
-    password = Column(String(45), nullable=False)
+    password = Column(String(100), nullable=False)
     class_name = Column('class', String(45), nullable=False)
 
     journal = relationship('Journal', back_populates='student')
     solution = relationship('Solution', back_populates='student')
+
+    def verify_password(self, plain_password: str):
+        return pwd_context.verify(plain_password, self.password)
 
 class Journal(Base):
     __tablename__ = 'journal'

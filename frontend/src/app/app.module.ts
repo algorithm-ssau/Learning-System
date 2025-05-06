@@ -32,6 +32,8 @@ import { RatingComponent } from '../pages/rating/rating.component';
 import { NotFoundErrorComponent } from '../pages/not-found-error/not-found-error.component';
 import { StudentJournalComponent } from '../pages/student-journal/student-journal.component';
 import { AuthorizationComponent } from '../pages/authorization/authorization.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './auth.interceptor';
 
 
 const roots: Routes = [
@@ -85,6 +87,7 @@ const roots: Routes = [
   ],
   providers: [
     GameStateService,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [
     AppComponent

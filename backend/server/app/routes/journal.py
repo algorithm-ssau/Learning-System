@@ -1,13 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
+
+from ..auth import require_teacher
 from .. import schemas, models
 from ..database import get_db
 
 router = APIRouter(prefix='/journal', tags=['journal'])
 
 @router.post('/', response_model=schemas.JournalResponse)
-def give_task(journal: schemas.JournalCreate, db: Session = Depends(get_db)):
+def give_task(journal: schemas.JournalCreate, db: Session = Depends(get_db), _ = Depends(require_teacher)):
     try:
         student = db.query(models.Student).filter(models.Student.login == journal.student_login).first()
         if not student:
@@ -31,7 +33,7 @@ def give_task(journal: schemas.JournalCreate, db: Session = Depends(get_db)):
         )
 
 @router.delete("/{student_login}/{task_id}")
-def delete_task(student_login: str, task_id: int, db: Session = Depends(get_db)):
+def delete_task(student_login: str, task_id: int, db: Session = Depends(get_db), _ = Depends(require_teacher)):
     try:
         journal_entry = db.query(models.Journal).filter(
             models.Journal.student_login == student_login,

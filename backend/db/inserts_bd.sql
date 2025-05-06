@@ -21,7 +21,7 @@ INSERT INTO learning_sys_db.task (id_task, name, id_game_field, id_goal) VALUES
 -- Заполнение таблицы student (20 учеников: 10 в классе 10A и 10 в классе 10B)
 -- Класс 10A
 INSERT INTO learning_sys_db.student (name, surname, patronymic, login, password, class) VALUES
-  ('Ivan', 'Ivanov', 'Ivanovich', 'student10A1', 'pass1', '10A'),
+ ('Ivan', 'Ivanov', 'Ivanovich', 'student10A1', 'pass1', '10A'),
   ('Petr', 'Petrov', 'Petrovich', 'student10A2', 'pass2', '10A'),
   ('Sidor', 'Sidorov', 'Sidorovich', 'student10A3', 'pass3', '10A'),
   ('Alexey', 'Alexeev', 'Alexeevich', 'student10A4', 'pass4', '10A'),
@@ -31,6 +31,7 @@ INSERT INTO learning_sys_db.student (name, surname, patronymic, login, password,
   ('Mikhail', 'Mikhailov', 'Mikhailovich', 'student10A8', 'pass8', '10A'),
   ('Andrey', 'Andreev', 'Andreevich', 'student10A9', 'pass9', '10A'),
   ('Victor', 'Victorov', 'Victorovich', 'student10A10', 'pass10', '10A');
+
 
 -- Класс 10B
 INSERT INTO learning_sys_db.student (name, surname, patronymic, login, password, class) VALUES
