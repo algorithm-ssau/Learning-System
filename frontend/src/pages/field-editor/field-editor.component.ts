@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@ang
 import { GameStateService, GameField, GameElement } from 'src/services/game-state.service';
 import { Router } from '@angular/router';
 import { DialogService } from 'src/services/dialog.service';
-import { EvaluationService } from 'src/services/evaluation.service';
 
 @Component({
   selector: 'app-field-editor',
@@ -18,7 +17,6 @@ export class FieldEditorComponent implements OnInit{
   height: number = 10;
   gameField: number[] = Array(this.width * this.height).fill(0);
   gameElements: GameElement [] = [];
-  collectCoins: boolean = false; // локальная переменная для флага
 
   constructor(
     private router: Router,
@@ -35,7 +33,6 @@ export class FieldEditorComponent implements OnInit{
 
   ngOnInit() {
     this.gameElements = this.gs.getGameElements();
-
     this.gs.getGameField().subscribe((gameData: GameField) => {
       if (gameData.fieldID) {
         this.isNewTask = false;
@@ -49,13 +46,14 @@ export class FieldEditorComponent implements OnInit{
 
       this.editorForm.patchValue({ energy: gameData.energy });
 
-      this.collectCoins = gameData.collectCoins;
       this.updateElementCountsFromField();
     });
   }
+
   deleteTask(){
     this.dialogService.openDeleteTaskDialog();
   }
+
   private updateElementCountsFromField(): void {
     // Обнуляем сначала все счётчики
     this.gameElements.forEach(element => element.count = 0);
@@ -77,8 +75,7 @@ export class FieldEditorComponent implements OnInit{
   }
 
   getElementImage(type: number): string {
-    const element = this.gameElements.find(e => e.index === type);
-    return element ? element.image : 'assets/empty.png';
+    return this.gs.getElementImage(type);
   }
 
   get gridRows() {
@@ -120,12 +117,6 @@ export class FieldEditorComponent implements OnInit{
 
     if (!draggedElement) return; // если элемент не найден
 
-    // Ограничение: нельзя ставить монету, если сбор монет отключён
-    if (draggedElement.name === 'Coin' && !this.collectCoins) {
-      console.warn('Сбор монет отключён — нельзя добавить монету.');
-      return; // ПРЕКРАЩАЕМ операцию
-    }
-
     // Проверка лимита элементов
     if (draggedElement.count < draggedElement.max) {
       const oldElementIndex = this.gameField[targetIndex];
@@ -149,8 +140,8 @@ export class FieldEditorComponent implements OnInit{
   }
 
   get canSave(): boolean {
-    const ant = this.gameElements.find(e => e.name === 'Ant');
-    return !!ant && ant.count > 0 && this.editorForm.valid;
+    const ant = this.gameElements.find(e => e.index === 4);
+    return !!ant && ant.count > 0;
   }
 
   saveTask() {
@@ -160,7 +151,6 @@ export class FieldEditorComponent implements OnInit{
         height: this.height,
         energy: this.editorForm.value.energy,
         gameField: this.gameField,
-        collectCoins: this.collectCoins
       };
 
       this.gs.newGameFieldId(baseField as GameField, this.isNewTask)

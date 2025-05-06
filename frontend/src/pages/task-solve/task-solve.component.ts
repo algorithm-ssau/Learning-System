@@ -13,12 +13,11 @@ import { SimulationService } from 'src/services/simulation.service';
 export class TaskSolveComponent implements OnInit{
   taskID: number = 1;
   studentID: string = '';
+  fieldID: number = 1;
   algorithmForm: FormGroup;
   taskDescription: string = '';
   consoleMessages: string[] = [];
   maxCommands: number = 10;
-  studentId!: number;
-  taskId!: number;
   draggedCommand: string | null = null;
   draggedFromCommands: FormArray | null = null;
   draggedCommandIndex: number | null = null;
@@ -27,7 +26,6 @@ export class TaskSolveComponent implements OnInit{
   width = 10;
   height = 10;
   gameField: number[] = Array(this.width * this.height).fill(0);
-  gameElements: GameElement [] = [];
   isRunning = false;
 
   commandsList = [
@@ -54,8 +52,8 @@ export class TaskSolveComponent implements OnInit{
     this.evaluationService.getTaskDetails(this.taskID, this.studentID).subscribe(task => {
       this.taskDescription = task[0].goal;
       this.gameField = [... task[2].gameField];
+      this.fieldID = task[2].fieldID;
     });
-    this.gameElements = this.gs.getGameElements();
   }
 
   get commands(): FormArray {
@@ -217,8 +215,7 @@ export class TaskSolveComponent implements OnInit{
   }
 
   getElementImage(type: number): string {
-    const element = this.gameElements.find(e => e.index === type);
-    return element ? element.image : 'assets/empty.png';
+    return this.gs.getElementImage(type);
   }
 
   getElementStyle() {
@@ -231,28 +228,48 @@ export class TaskSolveComponent implements OnInit{
   }
 
   convertAlgorithmToString(): string {
-    const processCommands = (commands: FormArray): string => {
-      return commands.controls.map(command => {
+    const commandMap: { [key: string]: number } = {
+      'вверх': 0,
+      'вниз': 1,
+      'вправо': 2,
+      'влево': 3,
+      'цикл': 4,
+      'конец_цикла': 5
+    };
+  
+    const processCommands = (commands: FormArray): number[] => {
+      const result: number[] = [];
+  
+      for (const command of commands.controls) {
         const type = command.get('type')?.value;
   
         if (type === 'цикл') {
-          const iterations = command.get('iterations')?.value || 2;
+          const iterations = +command.get('iterations')?.value || 2;
+          result.push(commandMap['цикл'], iterations);
+  
           const subCommands = processCommands(command.get('subCommands') as FormArray);
-          return `цикл ${iterations} {${subCommands}}`;
+          result.push(...subCommands);
+  
+          result.push(commandMap['конец_цикла']);
         } else {
-          return command.get('text')?.value;
+          const text = command.get('text')?.value;
+          if (text in commandMap) {
+            result.push(commandMap[text]);
+          }
         }
-      }).join('|');
+      }
+  
+      return result;
     };
   
-    return processCommands(this.commands);
+    return processCommands(this.commands).join(',');
   }
 
   submitSolution(): void {
     const solutionString = this.convertAlgorithmToString();
     console.log(solutionString);
     
-    this.evaluationService.submitSolution(this.studentId, this.taskId, solutionString)
+    this.evaluationService.submitSolution(this.studentID, this.taskID, solutionString)
       .subscribe(() => alert('Решение отправлено на проверку!'));
   }
 
@@ -260,7 +277,7 @@ export class TaskSolveComponent implements OnInit{
     this.consoleMessages = [];
     this.isRunning = true;
   
-    const { done$, log$ } = this.ss.simulateFromString(this.convertAlgorithmToString(), 500);
+    const { done$, log$ } = this.ss.simulateFromString(this.convertAlgorithmToString(), 500, this.fieldID);
   
     // Подписка на поток логов
     log$.subscribe((msg: string) => {
