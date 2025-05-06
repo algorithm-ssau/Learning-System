@@ -171,4 +171,10 @@ export class TaskViewComponent implements OnInit{
     });
     console.log("Я работаю!");
   }
+
+  stopSolution(): void {
+    this.ss.stopSimulation();
+    this.executionLogs.push('⏹ Выполнение остановлено пользователем');
+    this.isRunning = false;
+  }
 }
