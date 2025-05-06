@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
+
+from ..auth import get_current_user, require_teacher, verify_owner_or_teacher
 from .. import schemas, models
 from ..database import get_db
 
@@ -8,7 +10,7 @@ router = APIRouter(prefix='/students', tags=['students'])
 
 
 @router.post('/', response_model=schemas.StudentResponse)
-def create_student(student: schemas.StudentCreate, db: Session = Depends(get_db)):
+def create_student(student: schemas.StudentCreate, db: Session = Depends(get_db), _ = Depends(require_teacher)):
     db_student = models.Student(**student.dict())
     db.add(db_student)
     try:
@@ -43,3 +45,4 @@ def read_student(login: str, db: Session = Depends(get_db)):
     student = db.query(models.Student).filter(models.Student.login == login).first()
     if not student:
         raise HTTPException(status_code=404, detail='Студент не найден')
+    return {"name": f"{student.name} {student.surname} {student.patronymic}", "class_name": student.class_name, "login": "", "password": ""}

@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, FormArray, AbstractControl, Validators } from '
 import { ApiService } from 'src/services/api.service';
 import { catchError, lastValueFrom, of, timeout } from 'rxjs';
 import { Journal } from 'src/app/models/model';
+import { AuthService } from 'src/services/auth.service';
 
 @Component({
   selector: 'app-teacher-journal',
@@ -22,7 +23,7 @@ export class TeacherJournalComponent implements OnInit{
   tasksData: any[] = [];
   constructor(
     private fb: FormBuilder, 
-
+    private authService: AuthService,
     private router: Router,
     private dialogService: DialogService,
     private apiService: ApiService,
@@ -139,6 +140,7 @@ export class TeacherJournalComponent implements OnInit{
     this.router.navigate(['/developerinfo'])
   }
   Exit(): void {
+    this.authService.logout();
     this.router.navigate([''])
   }
   onSubmit(): void {
@@ -353,6 +355,7 @@ export class TeacherJournalComponent implements OnInit{
           })
         )
       )
+      this.studentsData[studentIndex][2].pop(taskIndex);
       console.log('Task deleted from student successfully');
     } catch (error) {
       console.error('Error deleting task from student:', error);
