@@ -297,4 +297,10 @@ export class TaskSolveComponent implements OnInit{
     });
     console.log("Я работаю!");
   }
+
+  stopSolution(): void {
+    this.ss.stopSimulation();
+    this.consoleMessages.push('⏹ Выполнение остановлено пользователем');
+    this.isRunning = false;
+  }
 }

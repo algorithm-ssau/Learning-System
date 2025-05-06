@@ -51,7 +51,9 @@
     </div>
 
     <h3>Консоль</h3>
-    <button (click)="runSolution()">▶ Play</button>
+    <!-- Кнопка управления симуляцией -->
+    <button *ngIf="!isRunning" (click)="runSolution()">▶ Play</button>
+    <button *ngIf="isRunning" (click)="stopSolution()">⏹ Stop</button>
     <div class="console">
       <p *ngFor="let message of executionLogs">{{ message }}</p>
     </div>

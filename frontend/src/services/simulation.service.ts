@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { GameField, GameStateService } from "./game-state.service";
-import { Observable, Subject, timer } from "rxjs";
+import { Observable, Subject, takeUntil, timer } from "rxjs";
 
 const dxdy = {
     'влево': [-1, 0],
@@ -17,25 +17,46 @@ type Direction = keyof typeof dxdy;
 
 export class SimulationService {
   private field: GameField = {fieldID: 1, width: 10, height: 10, energy: 10, gameField: []};
-  private delay = 200; // Задержка между шагами (в мс)
+  private delay = 100; // Задержка между шагами (в мс)
   private commands: string[] = [];
   private pointer = 0;
+  private isRunning = false; // Флаг запуска визуализации
+  private stop$ = new Subject<void>(); // Сигнал прерывания симуляции
 
-  constructor(private gameStateService: GameStateService) {
-    this.gameStateService.getGameField().subscribe(f => this.field = { ...f });
-  }
+  constructor(private gameStateService: GameStateService) {}
 
   simulateFromString(commandStr: string, delay: number = 500, fieldID: number): { done$: Observable<void>, log$: Observable<string> } {
+    if (this.isRunning) {
+      throw new Error('Симуляция уже запущена');
+    }
+
+    this.stop$ = new Subject<void>(); // Сброс остановки симуляции
+    this.isRunning = true; // Запуск симуляции
     this.commands = this.parseCommands(commandStr);
     this.delay = delay;
     this.pointer = 0;
-  
+
     const done$ = new Subject<void>();
     const log$ = new Subject<string>();
-    this.gameStateService.getGameField(fieldID).subscribe(f => this.field = { ...f }); // На всякий случай обновляем поле симуляции
-  
-    this.runNextCommand(done$, log$);
+
+    this.gameStateService.getGameField(fieldID).subscribe(f => {
+      this.field = { ...f };
+      this.runNextCommand(done$, log$);
+    });
+
+    // По завершению симуляции сбрасываем флаг
+    done$.subscribe({
+      complete: () => { this.isRunning = false; },
+      error: () => { this.isRunning = false; }
+    });
+
     return { done$: done$.asObservable(), log$: log$.asObservable() };
+  }
+
+  stopSimulation(): void {
+    this.stop$.next();       // Отправляем сигнал остановки
+    this.stop$.complete();   // Завершаем subject
+    this.isRunning = false;
   }
 
   private runNextCommand(done: Subject<void>, log: Subject<string>) {
@@ -55,8 +76,11 @@ export class SimulationService {
     }
 
     // Визуальная задержка
-    timer(this.delay).subscribe(() => {
-      this.runNextCommand(done, log);
+    timer(this.delay).pipe(
+      takeUntil(this.stop$) // Прерывание по команде
+    ).subscribe({
+      next: () => this.runNextCommand(done, log),
+      complete: () => done.complete() // Завершаем done$, если таймер прерван
     });
   }
 
