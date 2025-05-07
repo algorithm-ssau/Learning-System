@@ -13,6 +13,7 @@ import { SimulationService } from 'src/services/simulation.service';
 export class TaskViewComponent implements OnInit{
   taskID: number = 1;
   studentID: string = '';
+  fieldID: number = 1;
   taskText: string = '';
   commandLimit: number = 0;
   algorithmForm: FormGroup;
@@ -20,7 +21,6 @@ export class TaskViewComponent implements OnInit{
   width = 10;
   height = 10;
   gameGrid: number[] = Array(this.width * this.height).fill(0);
-  gameElements: GameElement [] = [];
   executionLogs: string[] = [];
   isRunning = false;
   
@@ -46,8 +46,8 @@ export class TaskViewComponent implements OnInit{
       this.taskText = task[0].goal;
       this.gameGrid = [... task[2].gameField];
       this.parsedAlgorithm = task[1].algorithm;
+      this.fieldID = task[2].fieldID;
     });
-    this.gameElements = this.gs.getGameElements();
   }
 
 
@@ -135,8 +135,7 @@ export class TaskViewComponent implements OnInit{
   }
 
   getElementImage(type: number): string {
-    const element = this.gameElements.find(e => e.index === type);
-    return element ? element.image : 'assets/empty.png';
+    return this.gs.getElementImage(type);
   }
 
   getElementStyle() {
@@ -152,7 +151,7 @@ export class TaskViewComponent implements OnInit{
     this.executionLogs = [];
     this.isRunning = true;
   
-    const { done$, log$ } = this.ss.simulateFromString(this.parsedAlgorithm, 500);
+    const { done$, log$ } = this.ss.simulateFromString(this.parsedAlgorithm, 500, this.fieldID);
   
     // Подписка на поток логов
     log$.subscribe((msg: string) => {
@@ -171,5 +170,11 @@ export class TaskViewComponent implements OnInit{
       }
     });
     console.log("Я работаю!");
+  }
+
+  stopSolution(): void {
+    this.ss.stopSimulation();
+    this.executionLogs.push('⏹ Выполнение остановлено пользователем');
+    this.isRunning = false;
   }
 }

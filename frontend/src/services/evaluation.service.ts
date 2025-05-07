@@ -63,7 +63,7 @@ export class EvaluationService {
     return this.http.get<Solution>('/api/solution', { params });
   }
 
-  submitSolution(studentId: number, taskId: number, solution: string): Observable<any> {
+  submitSolution(studentId: string, taskId: number, solution: string): Observable<any> {
     const submission = {
       studentId,
       taskId,
