@@ -8,10 +8,9 @@
                 <!-- Панель с элементами -->
                 <div class="elements-panel">
                     <div class="element" *ngFor="let element of gameElements"
-                        [class.disabled]="element.name === 'Coin' && !collectCoins"
                         [draggable]="element.count < element.max"
                         (dragstart)="onDragStart($event, element)">
-                        <img class="panel-img" [src]="element.image" />
+                        <img class="panel-img" [src]="getElementImage(element.index)" />
                         <span>{{ element.count }}/{{ element.max }}</span>
                     </div>
                 </div>

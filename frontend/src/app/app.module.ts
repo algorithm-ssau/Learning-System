@@ -34,6 +34,7 @@ import { StudentJournalComponent } from '../pages/student-journal/student-journa
 import { AuthorizationComponent } from '../pages/authorization/authorization.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './auth.interceptor';
+import { SystemInfoTeacherComponent } from '../pages/system-info-teacher/system-info-teacher.component';
 
 
 const roots: Routes = [
@@ -45,6 +46,7 @@ const roots: Routes = [
   {path: 'studentjournal', component: StudentJournalComponent},
   {path: 'developerinfo', component: DeveloperInfoComponent},
   {path: 'systeminfo', component: SystemInfoComponent},
+  {path: 'systeminfoteacher', component: SystemInfoTeacherComponent},
   {path: 'notfounderror', component: NotFoundErrorComponent},
   {path: 'rating', component: RatingComponent},
   {path: '**', component: AppComponent},
@@ -68,7 +70,8 @@ const roots: Routes = [
     RatingComponent,
     NotFoundErrorComponent,
     StudentJournalComponent,
-    AuthorizationComponent
+    AuthorizationComponent,
+    SystemInfoTeacherComponent
   ],
   imports: [
     BrowserModule,
