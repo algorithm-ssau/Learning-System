@@ -7,10 +7,8 @@
 </head>
 <body>
 
-
   <header>
     <h1>Обучающая система по основам алгоритмизации и программирования</h1>
-
   </header>
 
   <nav class="contents">
@@ -21,7 +19,6 @@
       <li><a (click)="scrollTo('student-journal')">Журнал ученика</a></li>
       <li><a (click)="scrollTo('rating')">Рейтинг класса</a></li>
       <li><a (click)="scrollTo('task-solution')">Решение задания</a></li>
-      <li><a (click)="scrollTo('system-info')">Справка о системе</a></li>
       <li><a (click)="scrollTo('developer-info')">Справка о разработчиках</a></li>
     </ul>
   </nav>
@@ -45,18 +42,18 @@
     отслеживать свои домашние задания, а также среднюю оценку и место в рейтинге класса. Для завершения работы
       с веб-приложением нужно нажать на кнопку “ВЫХОД”.</p>
     <div class="image-container">
-      <img src="assets/student-journal.png">
+      <img src="assets/student-journal.png" alt="Журнал ученика">
     </div>
   </section>
 
   <section id="rating">
     <h2>Рейтинг класса</h2>
     <p>Чтобы посмотреть рейтинг класса ученику необходимо нажать на кнопку “Посмотреть рейтинг класса”.
-      Рейтинг класса мотивирует выполнять все задания качественно.  Чем выше рейтинг ученика, тем выше он
+      Рейтинг класса мотивирует выполнять все задания качественно. Чем выше рейтинг ученика, тем выше он
       в рейтинге среди своих одноклассников. Значение рейтинга рассчитывается следующим образом: ЗДЕСЬНАПИСАНАФОРМУЛА.
       Для завершения работы со страницей рейтинга класса нужно нажать на кнопку “Вернуться к журналу”.</p>
     <div class="image-container">
-      <img src="assets/class-rating.png">
+      <img src="assets/class-rating.png" alt="Рейтинг класса">
     </div>
   </section>
 
@@ -72,13 +69,8 @@
       на проверку!”. Для завершения работы со страницей решения задания нужно отправить задание или нажать на
       кнопку “Вернуться к журналу”.</p>
     <div class="image-container">
-      <img src="assets/solving-task.png">
+      <img src="assets/solving-task.png" alt="Решение задания">
     </div>
-  </section>
-
-  <section id="system-info">
-    <h2>Справка о системе</h2>
-    <p>Эта страница содержит информацию о том, как использовать веб-приложение.</p>
   </section>
 
   <section id="developer-info">
@@ -87,7 +79,12 @@
   </section>
 
   <!-- Кнопка вверх -->
-  <button id="back-to-top" title="Наверх" (click)="backToTop()" style="display: none;">&#8593;</button>
+  <button
+    id="back-to-top"
+    title="Наверх"
+    (click)="backToTop()">
+    &#8593;
+  </button>
 
   <script src="script.js"></script>
 </body>
