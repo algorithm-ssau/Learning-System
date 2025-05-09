@@ -16,8 +16,8 @@ type Direction = keyof typeof dxdy;
 })
 
 export class SimulationService {
-  private field: GameField = {fieldID: 1, width: 10, height: 10, energy: 10, gameField: []};
-  private delay = 100; // Задержка между шагами (в мс)
+  private field: GameField = {id_game_field: 1, width: 10, length: 10, energy: 10, layout_array: []};
+  private delay = 1000; // Задержка между шагами (в мс)
   private commands: string[] = [];
   private pointer = 0;
   private isRunning = false; // Флаг запуска визуализации
@@ -39,7 +39,7 @@ export class SimulationService {
     const done$ = new Subject<void>();
     const log$ = new Subject<string>();
 
-    this.gameStateService.getGameField(fieldID).subscribe(f => {
+    this.gameStateService.getGameField().subscribe(f => {
       this.field = { ...f };
       this.runNextCommand(done$, log$);
     });
@@ -99,13 +99,13 @@ export class SimulationService {
     
       if (
         newX < 0 || newX >= this.field.width ||
-        newY < 0 || newY >= this.field.height
+        newY < 0 || newY >= this.field.length
       ) {
         throw 'Нельзя покинуть игровое поле';
       }
     
       const target = newY * this.field.width + newX;
-      const field = [...this.field.gameField];
+      const field = [...this.field.layout_array];
       const targetValue = field[target];
     
       if (targetValue === 3) {
@@ -120,7 +120,7 @@ export class SimulationService {
         const nextY = newY + dy;
         if (
           nextX < 0 || nextX >= this.field.width ||
-          nextY < 0 || nextY >= this.field.height
+          nextY < 0 || nextY >= this.field.length
         ) {
           throw 'За камнем препятствие';
         }
@@ -141,11 +141,12 @@ export class SimulationService {
         field[pos] = 0;
       }
     
-      this.field.gameField = field;
+      this.field.layout_array = field;
+      this.gameStateService.setGameField(this.field);
     }
 
   private getAntPosition(): number {
-    return this.field.gameField.findIndex(cell => cell === 4);
+    return this.field.layout_array.findIndex(cell => cell === 4);
   }
 
   private parseCommands(commandStr: string): string[] {

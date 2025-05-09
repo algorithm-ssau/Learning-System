@@ -8,7 +8,7 @@ from pydantic import BaseModel
 
 from app import models
 from .database import engine, Base
-from .routes import students, tasks, classes, journal
+from .routes import students, tasks, classes, journal, gamefields
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from .database import get_db
@@ -84,6 +84,7 @@ app.include_router(classes.router)
 app.include_router(students.router)
 app.include_router(tasks.router)
 app.include_router(journal.router)
+app.include_router(gamefields.router)
 
 @app.get('/')
 def read_root():

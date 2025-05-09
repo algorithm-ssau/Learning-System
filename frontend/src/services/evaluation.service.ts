@@ -4,11 +4,11 @@ import { forkJoin, map, Observable, switchMap } from 'rxjs';
 import { GameField } from './game-state.service';
 import { GameStateService } from './game-state.service';
 
-interface Task {
-  taskID: number;
+export interface Task {
+  id_task?: number;
   name: string;
   gameFieldID: number;
-  goal: string;
+  goal: number;
 }
 
 interface Solution {

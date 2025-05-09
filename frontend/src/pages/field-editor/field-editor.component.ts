@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { GameStateService, GameField, GameElement } from 'src/services/game-state.service';
+import { Task } from 'src/services/evaluation.service';
 import { Router } from '@angular/router';
 import { DialogService } from 'src/services/dialog.service';
 
@@ -11,7 +12,7 @@ import { DialogService } from 'src/services/dialog.service';
 })
 export class FieldEditorComponent implements OnInit{
 
-  isNewTask: boolean = false; // По умолчанию считаем, что создаём новое задание
+  fieldID?: number; // По умолчанию считаем, что создаём новое задание
   editorForm: FormGroup;
   width: number = 10;
   height: number = 10;
@@ -33,15 +34,27 @@ export class FieldEditorComponent implements OnInit{
 
   ngOnInit() {
     this.gameElements = this.gs.getGameElements();
+    const taskType = this.gs.getTaskType();
+    // Подставим текст в зависимости от типа
+    const taskTextMap: Record<number, string> = {
+      1: 'Соберите все монеты',
+      2: 'Переместите все камни в лунки',
+      3: 'Соберите монеты и поместите камни в лунки'
+    };
+    this.editorForm = this.fb.group({
+      "taskName": new FormControl("", {validators: [Validators.required, Validators.maxLength(30)]}),
+      "taskText": new FormControl({value: taskTextMap[taskType], disabled: true}, {validators: [Validators.required, Validators.maxLength(200)]}),
+      "energy": new FormControl(1, {validators: [Validators.required, Validators.min(1), Validators.max(50)]}),
+    })
     this.gs.getGameField().subscribe((gameData: GameField) => {
-      if (gameData.fieldID) {
-        this.isNewTask = false;
+      if (gameData.id_game_field) {
+        this.fieldID = gameData.id_game_field;
       }
 
-      if (gameData.gameField && gameData.gameField.length) {
-        this.gameField = [...gameData.gameField];
+      if (gameData.layout_array && gameData.layout_array.length) {
+        this.gameField = [...gameData.layout_array];
       } else {
-        this.gameField = Array(gameData.width * gameData.height).fill(-1);
+        this.gameField = Array(gameData.width * gameData.length).fill(0);
       }
 
       this.editorForm.patchValue({ energy: gameData.energy });
@@ -71,7 +84,7 @@ export class FieldEditorComponent implements OnInit{
   }
 
   goToJournal() {
-    this.router.navigate(['/journal']);
+    this.router.navigate(['/teacherjournal']);
   }
 
   getElementImage(type: number): string {
@@ -145,23 +158,48 @@ export class FieldEditorComponent implements OnInit{
   }
 
   saveTask() {
-    if (this.editorForm.valid) {
-      const baseField: Omit<GameField, 'fieldID'> = {
-        width: this.width,
-        height: this.height,
-        energy: this.editorForm.value.energy,
-        gameField: this.gameField,
-      };
-
-      this.gs.newGameFieldId(baseField as GameField, this.isNewTask)
-        .subscribe((gfWithId: GameField) => {
-          this.gs.sendGameField(gfWithId).subscribe(() => {
-            alert('Игровое поле сохранено!');
-          });
-        });
-
-    } else {
+    if (!this.editorForm.valid) {
       alert('Форма заполнена некорректно!');
+      return;
+    }
+  
+    const taskName = this.editorForm.value.taskName;
+    const type = this.gs.getTaskType();
+    const energy = this.editorForm.value.energy;
+  
+    const baseField: Omit<GameField, 'fieldID'> = {
+      width: this.width,
+      length: this.height,
+      energy,
+      layout_array: this.gameField,
+    };
+  
+    if (this.fieldID) {
+      // Обновление поля
+      this.gs.sendGameField({ ...baseField, id_game_field: this.fieldID }).subscribe(() => {
+        const newTask: Task = {
+          name: taskName,
+          gameFieldID: this.fieldID!,
+          goal: type
+        };
+  
+        this.gs.sendTask(newTask).subscribe(() => {
+          alert('Задание и поле успешно сохранены!');
+        });
+      });
+    } else {
+      // Создание нового поля
+      this.gs.newGameFieldId(baseField as GameField).subscribe((savedField: GameField) => {
+        const newTask: Task = {
+          name: taskName,
+          gameFieldID: savedField.id_game_field!,
+          goal: type
+        };
+  
+        this.gs.sendTask(newTask).subscribe(() => {
+          alert('Задание и поле успешно сохранены!');
+        });
+      });
     }
   }
 }
