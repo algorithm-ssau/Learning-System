@@ -35,13 +35,14 @@ export class DialogService {
     }
 
     openAddTaskDialog() {
-        return this.dialog.open(AddTaskDialogComponent, {
-            hasBackdrop: true,
-            disableClose: false,
-            autoFocus: false,
-            backdropClass: 'dialog-backdrop',
-            panelClass: 'centered-dialog',
-          });
+      const dialogRef = this.dialog.open(AddTaskDialogComponent, {
+        hasBackdrop: true,
+        disableClose: false,
+        autoFocus: false,
+        backdropClass: 'dialog-backdrop',
+        panelClass: 'centered-dialog',
+      });
+      return dialogRef.afterClosed();
     }
 
     openDeleteTaskDialog() {

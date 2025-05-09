@@ -6,6 +6,7 @@ import { ApiService } from 'src/services/api.service';
 import { catchError, lastValueFrom, of, timeout } from 'rxjs';
 import { Journal } from 'src/app/models/model';
 import { AuthService } from 'src/services/auth.service';
+import { GameStateService } from 'src/services/game-state.service';
 
 @Component({
   selector: 'app-teacher-journal',
@@ -27,6 +28,7 @@ export class TeacherJournalComponent implements OnInit{
     private router: Router,
     private dialogService: DialogService,
     private apiService: ApiService,
+    private gs: GameStateService
     ) {
     this.classesForm = this.fb.group({
       classes: this.fb.array([])
@@ -231,7 +233,12 @@ export class TeacherJournalComponent implements OnInit{
   }
 
   openAddTask() {
-    this.dialogService.openAddTaskDialog();
+    this.dialogService.openAddTaskDialog().subscribe(taskData => {
+      if (taskData !== null){
+        this.gs.handleTaskCreation(taskData);
+        this.router.navigate(['/editor']);
+      }
+    });
   }
 
   openViewTasks() {

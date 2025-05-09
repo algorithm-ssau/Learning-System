@@ -32,3 +32,11 @@ def read_task(task_id: int, db: Session = Depends(get_db), _ = Depends(require_t
     if not task:
         raise HTTPException(status_code=404, detail='Задание не найдено')
     return task
+
+@router.post("/", response_model=schemas.TaskResponse)
+def create_task(task: schemas.TaskCreate, db: Session = Depends(get_db), _=Depends(require_teacher)):
+    db_task = models.Task(**task.dict())
+    db.add(db_task)
+    db.commit()
+    db.refresh(db_task)  # Сюда будет включен id_task, генерируемый базой данных
+    return db_task  # Возвращаем db_task, который теперь включает id_task

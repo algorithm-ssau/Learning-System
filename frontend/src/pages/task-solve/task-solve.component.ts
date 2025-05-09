@@ -25,7 +25,8 @@ export class TaskSolveComponent implements OnInit{
   commandWasMoved = false;
   width = 10;
   height = 10;
-  gameField: number[] = Array(this.width * this.height).fill(0);
+  initialGameField: number[] = [];
+  gameField: number[] = [];
   isRunning = false;
 
   commandsList = [
@@ -49,11 +50,17 @@ export class TaskSolveComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    /*
     this.evaluationService.getTaskDetails(this.taskID, this.studentID).subscribe(task => {
       this.taskDescription = task[0].goal;
       this.gameField = [... task[2].gameField];
       this.fieldID = task[2].fieldID;
     });
+    */
+   this.gs.getGameField().subscribe(field => {
+    this.gameField = [...field.layout_array];
+    this.initialGameField = [...field.layout_array];
+   });
   }
 
   get commands(): FormArray {
@@ -277,7 +284,7 @@ export class TaskSolveComponent implements OnInit{
     this.consoleMessages = [];
     this.isRunning = true;
   
-    const { done$, log$ } = this.ss.simulateFromString(this.convertAlgorithmToString(), 500, this.fieldID);
+    const { done$, log$ } = this.ss.simulateFromString(this.convertAlgorithmToString(), 1000, this.fieldID);
   
     // Подписка на поток логов
     log$.subscribe((msg: string) => {

@@ -12,6 +12,48 @@ class StudentBase(BaseModel):
     class Config:
         orm_mode = True
         fields = {'class_name': 'class'}
+
+
+class GameFieldBase(BaseModel):
+    length: int
+    width: int
+    layout_array: str
+    energy: int
+
+class GameFieldCreate(GameFieldBase):
+    pass
+
+class GameFieldResponse(GameFieldBase):
+    id_game_field: int
+
+    class Config:
+        orm_mode = True
+
+class GameFieldResponse(BaseModel):
+    id_game_field: int
+    length: int
+    width: int
+    layout_array: str
+    energy: int
+
+    class Config:
+        orm_mode = True
+
+
+class TaskCreate(BaseModel):
+    name: str
+    id_game_field: int
+    id_goal: int
+
+    class Config:
+        orm_mode = True
+
+class TaskResponse(TaskCreate):
+    id_task: int
+
+    class Config:
+        orm_mode = True
+
 class TaskBase(BaseModel):
     id_task: int
     name: str
@@ -20,6 +62,7 @@ class TaskBase(BaseModel):
 
     class Config:
         orm_mode = True
+
 
 class StudentCreate(StudentBase):
     pass
@@ -44,16 +87,6 @@ class TaskResponse(TaskBase):
     goal: 'GoalResponse'
     journals: List['JournalResponse'] = []
     solutions: List['SolutionResponse'] = []
-
-class GameFieldResponse(BaseModel):
-    id_game_field: int
-    length: int
-    width: int
-    layout_array: str
-    energy: int
-
-    class Config:
-        orm_mode = True
 
 class GoalResponse(BaseModel):
     id_goal: int
