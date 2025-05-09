@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { TaskData } from 'src/services/game-state.service';
 
 @Component({
   selector: 'app-add-task-dialog',
@@ -9,21 +10,44 @@ import { MatDialogRef } from '@angular/material/dialog';
 export class AddTaskDialogComponent {
   taskData = {
     width: 10,
-    length: 10,
+    heigth: 10,
     type: '',
     creationMethod: '',
-    stonesQuantity: 1,
-    holesQuantity: 1,
-    coinsQuantity: 1
+    stonesQuantity: 0,
+    holesQuantity: 0,
+    coinsQuantity: 0
   }
 
   constructor(private dialogRef: MatDialogRef<AddTaskDialogComponent>) {}
 
+  onTypeChange(): void {
+    if (this.taskData.type === 'place-stones') {
+      this.taskData.coinsQuantity = 0;
+    }
+  }
+  
+  onMethodChange(): void {
+    if (this.taskData.creationMethod === 'manual') {
+      this.taskData.stonesQuantity = 0;
+      this.taskData.holesQuantity = 0;
+      this.taskData.coinsQuantity = 0;
+    }
+  }
+
   onCancel(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(null);
   }
 
   onAdd(): void {
-    this.dialogRef.close(this.taskData);
+    const data: TaskData = {
+      width: this.taskData.width,
+      length: this.taskData.heigth,
+      type: this.taskData.type,
+      createMethod: this.taskData.creationMethod,
+      rocks: Math.floor(this.taskData.stonesQuantity * this.taskData.width * this.taskData.heigth / 100),
+      holes: Math.floor(this.taskData.holesQuantity * this.taskData.width * this.taskData.heigth / 100),
+      coins: Math.floor(this.taskData.coinsQuantity * this.taskData.width * this.taskData.heigth/ 100)
+    }
+    this.dialogRef.close(data);
   }
 }

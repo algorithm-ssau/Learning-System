@@ -4,44 +4,53 @@
         <form (ngSubmit)="onAdd()" #taskForm="ngForm">
             <div class="row">
                 <label>Ширина:</label>
-                <input type="number" [(ngModel)]="taskData.width" id="width" min="10" max="20" placeholder="От 10 до 20" required>
+                <input type="number" name="width" [(ngModel)]="taskData.width" id="width" min="10" max="20" placeholder="От 10 до 20" required>
             </div>
             <div class="row">
                 <label>Длина:</label>
-                <input type="number" [(ngModel)]="taskData.length" id="length" min="10" max="20" placeholder="От 10 до 20" required>
+                <input type="number" name="heigth" [(ngModel)]="taskData.heigth" id="length" min="10" max="20" placeholder="От 10 до 20" required>
             </div>
             <div class="row">
                 <label>Тип задания:</label>
-                <select [(ngModel)]="taskData.type" id="task-type" required>
-                    <option value="collect-coins">Собрать монеты</option>
-                    <option value="place-stones">Поместить камни в лунки</option>
-                    <option value="dream-stones">Помечтить камни в лунки</option>
-                    <option value="collect-coins-and-place">Собрать монеты и поместить камни</option>
+                <select name="type" [(ngModel)]="taskData.type"
+                        (ngModelChange)="onTypeChange()" id="task-type" required>
+                  <option value="collect-coins">Собрать монеты</option>
+                  <option value="place-stones">Поместить камни в лунки</option>
+                  <option value="collect-coins-and-place">Собрать монеты и поместить камни</option>
                 </select>
             </div>
+              
             <div class="row">
                 <label>Выбор:</label>
-                <select [(ngModel)]="taskData.creationMethod" id="creation-method" required>
-                    <option value="manual">Ручное</option>
-                    <option value="automatic">Автоматическое</option>
+                <select name="createMethod" [(ngModel)]="taskData.creationMethod"
+                        (ngModelChange)="onMethodChange()" id="creation-method" required>
+                  <option value="manual">Ручное</option>
+                  <option value="automatic">Автоматическое</option>
                 </select>
             </div>
-            <div id="automatic-fields" style="display: none;">
+              
+              <!-- Отображается только если выбран автоматический способ -->
+              <div *ngIf="taskData.creationMethod === 'automatic'">
                 <div class="row">
-                    <label>Количество камней (%):</label>
-                    <input type="number" [(ngModel)]="taskData.stonesQuantity" id="stones-quantity" min="1" max="30" placeholder="От 1 до 30" required>
+                  <label>Количество камней (%):</label>
+                  <input name="rocks" type="number" [(ngModel)]="taskData.stonesQuantity"
+                    id="stones-quantity" min="0" max="30" placeholder="От 0 до 30" required>
                 </div>
                 <div class="row">
-                    <label>Количество лунок (%):</label>
-                    <input type="number" [(ngModel)]="taskData.holesQuantity" id="holes-quantity" min="1" max="20" placeholder="От 1 до 20" required>
+                  <label>Количество лунок (%):</label>
+                  <input name="holes" type="number" [(ngModel)]="taskData.holesQuantity"
+                    id="holes-quantity" min="0" max="20" placeholder="От 0 до 20" required>
                 </div>
-                <div class="row">
-                    <label>Количество монет (%):</label>
-                    <input type="number" [(ngModel)]="taskData.coinsQuantity" id="coins-quantity" min="1" max="10" placeholder="От 1 до 10" required>
+              
+                <!-- Скрывается, если задание только про камни -->
+                <div class="row" *ngIf="taskData.type !== 'place-stones'">
+                  <label>Количество монет (%):</label>
+                  <input name="coins" type="number" [(ngModel)]="taskData.coinsQuantity"
+                    id="coins-quantity" min="0" max="10" placeholder="От 0 до 10" required>
                 </div>
-            </div>
+              </div>
             <button (click)="onAdd()">Продолжить</button>
-            <button class="close-btn" (click)="onCancel()">Закрыть</button>
+            <button class="close-btn" type="button" (click)="onCancel()">Закрыть</button>
         </form>
     </div>
 </div>

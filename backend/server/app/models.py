@@ -8,7 +8,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated='auto')
 class GameField(Base):
     __tablename__ = 'game_field'
 
-    id_game_field = Column(Integer, primary_key=True)
+    id_game_field = Column(Integer, primary_key=True, autoincrement=True)
     length = Column(Integer, nullable=False)
     width = Column(Integer, nullable=False)
     layout_array = Column(String(1000), nullable=False)
@@ -27,7 +27,7 @@ class Goal(Base):
 class Task(Base):
     __tablename__ = 'task'
 
-    id_task = Column(Integer, primary_key=True)
+    id_task = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(45), nullable=False)
     id_game_field = Column(Integer, ForeignKey('game_field.id_game_field'))
     id_goal = Column(Integer, ForeignKey('goal.id_goal'))
@@ -67,7 +67,7 @@ class Journal(Base):
 class Solution(Base):
     __tablename__ = 'solution'
 
-    id_solution = Column(String(45), primary_key=True)
+    id_solution = Column(String(45), primary_key=True, autoincrement=True)
     algorithm = Column(String(1000))
     student_login = Column(String(45), ForeignKey('student.login'))
     id_task = Column(Integer, ForeignKey('task.id_task'))
