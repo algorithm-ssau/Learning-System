@@ -184,7 +184,7 @@ export class FieldEditorComponent implements OnInit{
         };
   
         this.gs.sendTask(newTask).subscribe(() => {
-          alert('Задание и поле успешно сохранены!');
+          this.router.navigate(['/teacherjournal']);
         });
       });
     } else {
@@ -197,7 +197,7 @@ export class FieldEditorComponent implements OnInit{
         };
   
         this.gs.sendTask(newTask).subscribe(() => {
-          alert('Задание и поле успешно сохранены!');
+          this.router.navigate(['/teacherjournal']);
         });
       });
     }

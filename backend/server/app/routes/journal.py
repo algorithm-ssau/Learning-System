@@ -52,3 +52,51 @@ def delete_task(student_login: str, task_id: int, db: Session = Depends(get_db),
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         db.close()
+
+@router.post('/{student_login}/{task_id}/{rating}', response_model=schemas.JournalResponse)
+def upsert_journal_entry(
+    student_login: str,
+    task_id: int,
+    rating: int,
+    db: Session = Depends(get_db),
+    _ = Depends(require_teacher)
+):
+    try:
+        # Проверка существования студента
+        student = db.query(models.Student).filter(models.Student.login == student_login).first()
+        if not student:
+            raise HTTPException(status_code=404, detail="Student not found")
+
+        # Проверка существования задачи
+        task = db.query(models.Task).filter(models.Task.id_task == task_id).first()
+        if not task:
+            raise HTTPException(status_code=404, detail="Task not found")
+
+        # Поиск записи в журнале
+        journal_entry = db.query(models.Journal).filter(
+            models.Journal.student_login == student_login,
+            models.Journal.id_task == task_id
+        ).first()
+
+        if journal_entry:
+            # Обновление существующей записи
+            journal_entry.mark = rating
+        else:
+            # Создание новой записи
+            journal_entry = models.Journal(
+                student_login=student_login,
+                id_task=task_id,
+                mark=rating
+            )
+            db.add(journal_entry)
+
+        db.commit()
+        db.refresh(journal_entry)
+        return journal_entry
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to submit or update rating: {str(e)}"
+        )
