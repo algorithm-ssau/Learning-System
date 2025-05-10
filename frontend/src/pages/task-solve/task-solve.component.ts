@@ -12,8 +12,8 @@ import { SimulationService } from 'src/services/simulation.service';
 })
 export class TaskSolveComponent implements OnInit{
   taskID: number = 1;
-  studentID: string = '';
-  fieldID: number = 1;
+  studentID: string = 'student10A1';
+  fieldID: number = 4;
   algorithmForm: FormGroup;
   taskDescription: string = '';
   consoleMessages: string[] = [];
@@ -50,17 +50,22 @@ export class TaskSolveComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    /*
+    
     this.evaluationService.getTaskDetails(this.taskID, this.studentID).subscribe(task => {
-      this.taskDescription = task[0].goal;
-      this.gameField = [... task[2].gameField];
-      this.fieldID = task[2].fieldID;
+      console.log(task);
+      const goal = task[0].id_goal;
+      const taskTextMap: Record<number, string> = {
+        1: 'Соберите все монеты',
+        2: 'Переместите все камни в лунки',
+        3: 'Соберите монеты и поместите камни в лунки'
+      };
+      console.log("Тип задания:", goal);
+      this.taskDescription = taskTextMap[goal];
+      console.log(this.taskDescription);
+      this.gameField = [... task[1].layout_array];
+      this.initialGameField = [... task[1].layout_array];
+      if (task[1].id_game_field) this.fieldID = task[1].id_game_field;
     });
-    */
-   this.gs.getGameField().subscribe(field => {
-    this.gameField = [...field.layout_array];
-    this.initialGameField = [...field.layout_array];
-   });
   }
 
   get commands(): FormArray {
@@ -72,7 +77,7 @@ export class TaskSolveComponent implements OnInit{
   }
 
   goToJournal(): void {
-    this.router.navigate(['/journal']);
+    this.router.navigate(['/studentjournal']);
   }
 
   asFormArray(control: AbstractControl | null): FormArray {

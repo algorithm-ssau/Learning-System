@@ -27,7 +27,7 @@ def read_tasks(skip: int = 0, limit: int = 100000, db: Session = Depends(get_db)
         )
 
 @router.get('/{task_id}', response_model=schemas.TaskResponse)
-def read_task(task_id: int, db: Session = Depends(get_db), _ = Depends(require_teacher)):
+def read_task(task_id: int, db: Session = Depends(get_db)):
     task = db.query(models.Task).filter(models.Task.id_task == task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail='Задание не найдено')

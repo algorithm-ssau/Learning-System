@@ -6,7 +6,7 @@ import { Task } from './evaluation.service';
 export interface GameField {
   id_game_field?: number;
   width: number,
-  length: number,
+  height: number,
   energy: number,
   layout_array: number[]
 }
@@ -50,8 +50,19 @@ export class GameStateService {
   constructor(private http: HttpClient){
       const initialField: GameField = {
         width: 10,
-        length: 10,
-        layout_array: [],
+        height: 10,
+        layout_array: [
+          4, 2, 1, 0, 1, 0, 0, 0, 0, 0,
+          0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        ],
         energy: 10
       };
     
@@ -74,9 +85,10 @@ export class GameStateService {
     if (gameFieldID !== undefined) {
       return this.http.get<GameField>(`${this.apiUrl}/gamefields/${gameFieldID}`).pipe(
         map((field) => {
+          console.log(field);
           const parsedField: GameField = {
             ...field,
-            layout_array: JSON.parse(field.layout_array as unknown as string)
+            layout_array: JSON.parse(field.layout_array as unknown as string),
           };
           this.gfSubject.next(parsedField);
           return parsedField;
@@ -146,7 +158,7 @@ export class GameStateService {
     const newField: GameField = {
       id_game_field: this.gfSubject.value.id_game_field,
       width: taskData.width,
-      length: taskData.length,
+      height: taskData.length,
       energy: 10,
       layout_array,
     };
@@ -164,7 +176,7 @@ export class GameStateService {
     const newField: GameField = {
       id_game_field: this.gfSubject.value.id_game_field,
       width: taskData.width,
-      length: taskData.length,
+      height: taskData.length,
       energy: 10,
       layout_array
     };
@@ -185,7 +197,7 @@ export class GameStateService {
   newGameFieldId(gameField: GameField): Observable<GameField> {
     const payload = {
       width: gameField.width, 
-      length: gameField.length,
+      height: gameField.height,
       energy: gameField.energy,
       layout_array: JSON.stringify(gameField.layout_array)
     };
@@ -202,7 +214,7 @@ export class GameStateService {
   sendGameField(gameField: GameField): Observable<GameField> {
     const payload = {
       width: gameField.width, 
-      length: gameField.length,
+      height: gameField.height,
       energy: gameField.energy,
       layout_array: JSON.stringify(gameField.layout_array)
     };
@@ -219,8 +231,8 @@ export class GameStateService {
   sendTask(task: Task): Observable<Task> {
     const newTask = {
       name: task.name,
-      id_game_field: task.gameFieldID!,
-      id_goal: task.goal
+      id_game_field: task.id_game_field!,
+      id_goal: task.id_goal
     };
     console.log('Отправка задания:', newTask);
     return this.http.post<Task>(`${this.apiUrl}/tasks`, newTask);
