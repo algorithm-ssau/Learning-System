@@ -38,5 +38,5 @@ def create_task(task: schemas.TaskCreate, db: Session = Depends(get_db), _=Depen
     db_task = models.Task(**task.dict())
     db.add(db_task)
     db.commit()
-    db.refresh(db_task)  # Сюда будет включен id_task, генерируемый базой данных
-    return db_task  # Возвращаем db_task, который теперь включает id_task
+    db.refresh(db_task)
+    return db_task

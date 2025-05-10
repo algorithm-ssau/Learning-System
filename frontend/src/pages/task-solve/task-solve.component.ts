@@ -62,6 +62,8 @@ export class TaskSolveComponent implements OnInit{
       console.log("Тип задания:", goal);
       this.taskDescription = taskTextMap[goal];
       console.log(this.taskDescription);
+      this.width = task[1].width;
+      this.height = task[1].height;
       this.gameField = [... task[1].layout_array];
       this.initialGameField = [... task[1].layout_array];
       if (task[1].id_game_field) this.fieldID = task[1].id_game_field;
@@ -279,10 +281,10 @@ export class TaskSolveComponent implements OnInit{
 
   submitSolution(): void {
     const solutionString = this.convertAlgorithmToString();
-    console.log(solutionString);
+    console.log(this.studentID, this.taskID, solutionString);
     
     this.evaluationService.submitSolution(this.studentID, this.taskID, solutionString)
-      .subscribe(() => alert('Решение отправлено на проверку!'));
+      .subscribe(() => this.router.navigate(['/studentjournal']));
   }
 
   runSolution(): void {

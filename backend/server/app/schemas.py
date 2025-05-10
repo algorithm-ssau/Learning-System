@@ -13,6 +13,9 @@ class StudentBase(BaseModel):
         orm_mode = True
         fields = {'class_name': 'class'}
 
+class StudentCreate(StudentBase):
+    pass
+
 
 class GameFieldBase(BaseModel):
     height: int
@@ -48,8 +51,11 @@ class TaskCreate(BaseModel):
     class Config:
         orm_mode = True
 
-class TaskResponse(TaskCreate):
+class TaskResponse(BaseModel):
     id_task: int
+    name: str
+    id_game_field: int
+    id_goal: int
 
     class Config:
         orm_mode = True
@@ -63,12 +69,6 @@ class TaskBase(BaseModel):
     class Config:
         orm_mode = True
 
-
-class StudentCreate(StudentBase):
-    pass
-
-class TaskCreate(TaskBase):
-    pass
 
 class JournalCreate(BaseModel):
     mark: Optional[int] = None
