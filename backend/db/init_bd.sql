@@ -17,7 +17,7 @@ USE `learning_sys_db` ;
 -- Table `learning_sys_db`.`game_field`
 CREATE TABLE IF NOT EXISTS `learning_sys_db`.`game_field` (
   `id_game_field` INT NOT NULL AUTO_INCREMENT,
-  `length` INT NOT NULL,
+  `height` INT NOT NULL,
   `width` INT NOT NULL,
   `layout_array` VARCHAR(1000) NOT NULL,
   `energy` INT NOT NULL,

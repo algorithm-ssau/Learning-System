@@ -54,7 +54,7 @@ export class FieldEditorComponent implements OnInit{
       if (gameData.layout_array && gameData.layout_array.length) {
         this.gameField = [...gameData.layout_array];
       } else {
-        this.gameField = Array(gameData.width * gameData.length).fill(0);
+        this.gameField = Array(gameData.width * gameData.height).fill(0);
       }
 
       this.editorForm.patchValue({ energy: gameData.energy });
@@ -169,7 +169,7 @@ export class FieldEditorComponent implements OnInit{
   
     const baseField: Omit<GameField, 'fieldID'> = {
       width: this.width,
-      length: this.height,
+      height: this.height,
       energy,
       layout_array: this.gameField,
     };
@@ -179,8 +179,8 @@ export class FieldEditorComponent implements OnInit{
       this.gs.sendGameField({ ...baseField, id_game_field: this.fieldID }).subscribe(() => {
         const newTask: Task = {
           name: taskName,
-          gameFieldID: this.fieldID!,
-          goal: type
+          id_game_field: this.fieldID!,
+          id_goal: type
         };
   
         this.gs.sendTask(newTask).subscribe(() => {
@@ -192,8 +192,8 @@ export class FieldEditorComponent implements OnInit{
       this.gs.newGameFieldId(baseField as GameField).subscribe((savedField: GameField) => {
         const newTask: Task = {
           name: taskName,
-          gameFieldID: savedField.id_game_field!,
-          goal: type
+          id_game_field: savedField.id_game_field!,
+          id_goal: type
         };
   
         this.gs.sendTask(newTask).subscribe(() => {

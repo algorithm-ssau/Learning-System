@@ -9,7 +9,7 @@ class GameField(Base):
     __tablename__ = 'game_field'
 
     id_game_field = Column(Integer, primary_key=True, autoincrement=True)
-    length = Column(Integer, nullable=False)
+    height = Column(Integer, nullable=False)
     width = Column(Integer, nullable=False)
     layout_array = Column(String(1000), nullable=False)
     energy = Column(Integer, nullable=False)
@@ -67,10 +67,9 @@ class Journal(Base):
 class Solution(Base):
     __tablename__ = 'solution'
 
-    id_solution = Column(String(45), primary_key=True, autoincrement=True)
     algorithm = Column(String(1000))
-    student_login = Column(String(45), ForeignKey('student.login'))
-    id_task = Column(Integer, ForeignKey('task.id_task'))
+    student_login = Column(String(45), ForeignKey('student.login'), primary_key=True)
+    id_task = Column(Integer, ForeignKey('task.id_task'), primary_key=True)
 
     student = relationship('Student', back_populates='solution')
     task = relationship('Task', back_populates='solution')

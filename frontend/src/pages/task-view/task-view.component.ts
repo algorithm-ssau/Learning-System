@@ -43,16 +43,18 @@ export class TaskViewComponent implements OnInit{
 
   ngOnInit(): void {
     this.evaluationService.getTaskDetails(this.taskID, this.studentID).subscribe(task => {
-      const goal = task[0].goal;
+      const goal = task[0].id_goal;
       const taskTextMap: Record<number, string> = {
         1: 'Соберите все монеты',
         2: 'Переместите все камни в лунки',
         3: 'Соберите монеты и поместите камни в лунки'
       };
       this.taskText = taskTextMap[goal];
-      this.gameGrid = [... task[2].layout_array];
-      this.parsedAlgorithm = task[1].algorithm;
-      if (task[2].id_game_field) this.fieldID = task[2].id_game_field;
+      this.gameGrid = [... task[1].layout_array];
+      if (task[1].id_game_field) this.fieldID = task[1].id_game_field;
+    });
+    this.evaluationService.getSolution(this.taskID, this.studentID).subscribe(solution => {
+      this.parsedAlgorithm = solution.algorithm;
     });
   }
 
