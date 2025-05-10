@@ -11,10 +11,16 @@ export interface Task {
   id_goal: number;
 }
 
-interface Solution {
+export interface Solution {
   student_login: string;
   id_task: number;
   algorithm: string;
+}
+
+export interface LogJournal {
+  mark: number,
+  student_login: string,
+  id_task: number
 }
 
 @Injectable({
@@ -26,8 +32,13 @@ export class EvaluationService {
 
   constructor(private http: HttpClient, private gs: GameStateService) {}
 
-  submitRating(rating: number): Observable<any> {
-    return this.http.post('/api/rating', { rating });
+  submitRating(studentID: string, taskID: number, rating: number): Observable<LogJournal> {
+    const submission: LogJournal = {
+      mark: rating,
+      student_login: studentID,
+      id_task: taskID
+    };
+    return this.http.post<LogJournal>(`${this.apiUrl}/journal/${studentID}/${taskID}/${rating}`, submission);
   }
 
   getTaskDetails(id_task: number, student_login: string): Observable<[Task, GameField]> {

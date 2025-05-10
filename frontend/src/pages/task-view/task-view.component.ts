@@ -12,7 +12,7 @@ import { SimulationService } from 'src/services/simulation.service';
 })
 export class TaskViewComponent implements OnInit{
   taskID: number = 1;
-  studentID: string = '';
+  studentID: string = 'student10A1';
   fieldID: number = 1;
   taskText: string = '';
   commandLimit: number = 0;
@@ -50,11 +50,16 @@ export class TaskViewComponent implements OnInit{
         3: 'Соберите монеты и поместите камни в лунки'
       };
       this.taskText = taskTextMap[goal];
+      this.width = task[1].width;
+      this.height = task[1].height;
       this.gameGrid = [... task[1].layout_array];
+      this.commandLimit = task[1].energy;
       if (task[1].id_game_field) this.fieldID = task[1].id_game_field;
     });
     this.evaluationService.getSolution(this.taskID, this.studentID).subscribe(solution => {
       this.parsedAlgorithm = solution.algorithm;
+      console.log(this.parsedAlgorithm);
+      this.restoreAlgorithmFromString(this.parsedAlgorithm);
     });
   }
 
@@ -116,6 +121,69 @@ export class TaskViewComponent implements OnInit{
     return index === array.length - 1;
   }
 
+  restoreAlgorithmFromString(algorithm: string): void {
+    const commandMapReverse: { [key: number]: string } = {
+      0: 'вверх',
+      1: 'вниз',
+      2: 'вправо',
+      3: 'влево',
+      4: 'цикл',
+      5: 'конец_цикла'
+    };
+  
+    const buildCommands = (tokens: number[], indexRef: { index: number }): FormArray => {
+      const commandsArray = this.fb.array<FormGroup>([]);
+  
+      while (indexRef.index < tokens.length) {
+        const token = tokens[indexRef.index];
+  
+        if (token === 5) {
+          indexRef.index++;
+          break;
+        }
+  
+        if (token === 4) {
+          indexRef.index++;
+          const iterations = tokens[indexRef.index];
+          indexRef.index++;
+  
+          const subCommands = buildCommands(tokens, indexRef);
+  
+          const command = this.fb.group({
+            type: new FormControl('цикл'),
+            text: new FormControl('цикл'),
+            iterations: new FormControl(iterations),
+            subCommands: subCommands
+          });
+  
+          commandsArray.push(command);
+        } else {
+          const commandName = commandMapReverse[token];
+          if (commandName) {
+            const command = this.fb.group({
+              type: new FormControl(commandName),
+              text: new FormControl(commandName),
+              iterations: new FormControl(null),
+              subCommands: this.fb.array([])
+            });
+  
+            commandsArray.push(command);
+          }
+  
+          indexRef.index++;
+        }
+      }
+  
+      return commandsArray;
+    };
+  
+    const tokens = algorithm.split(',').map(str => parseInt(str.trim(), 10)).filter(n => !isNaN(n));
+    const indexRef = { index: 0 };
+    const commands = buildCommands(tokens, indexRef);
+  
+    this.algorithmForm.setControl('commands', commands);
+  }
+
   goToJournal(): void {
     this.router.navigate(['/teacherjournal']);
   }
@@ -126,8 +194,8 @@ export class TaskViewComponent implements OnInit{
       alert('Выберите корректную оценку!');
       return;
     }
-    this.evaluationService.submitRating(rating).subscribe(() => {
-      alert('Оценка выставлена!');
+    this.evaluationService.submitRating(this.studentID, this.taskID, rating).subscribe(() => {
+      this.router.navigate(['/teacherjournal']);
     });
   }
 
