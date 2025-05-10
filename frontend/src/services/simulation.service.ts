@@ -16,7 +16,7 @@ type Direction = keyof typeof dxdy;
 })
 
 export class SimulationService {
-  private field: GameField = {id_game_field: 1, width: 10, length: 10, energy: 10, layout_array: []};
+  private field: GameField = {id_game_field: 1, width: 10, height: 10, energy: 10, layout_array: []};
   private delay = 1000; // Задержка между шагами (в мс)
   private commands: string[] = [];
   private pointer = 0;
@@ -99,7 +99,7 @@ export class SimulationService {
     
       if (
         newX < 0 || newX >= this.field.width ||
-        newY < 0 || newY >= this.field.length
+        newY < 0 || newY >= this.field.height
       ) {
         throw 'Нельзя покинуть игровое поле';
       }
@@ -120,7 +120,7 @@ export class SimulationService {
         const nextY = newY + dy;
         if (
           nextX < 0 || nextX >= this.field.width ||
-          nextY < 0 || nextY >= this.field.length
+          nextY < 0 || nextY >= this.field.height
         ) {
           throw 'За камнем препятствие';
         }

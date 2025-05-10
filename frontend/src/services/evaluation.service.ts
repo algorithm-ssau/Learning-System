@@ -7,69 +7,56 @@ import { GameStateService } from './game-state.service';
 export interface Task {
   id_task?: number;
   name: string;
-  gameFieldID: number;
-  goal: number;
+  id_game_field: number;
+  id_goal: number;
 }
 
 interface Solution {
-  solutionID: number;
-  studentID: string;
-  taskID: number;
+  student_login: string;
+  id_task: number;
   algorithm: string;
-}
-
-interface SolveTask {
-  taskID: number;
-  studentID: string;
-  mark: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class EvaluationService {
-  constructor(private http: HttpClient, private gs: GameStateService) {}
 
-  getEvaluationData(): Observable<any> {
-    return this.http.get('/api/evaluation');
-  }
+  private apiUrl = 'http://localhost:8000'
+
+  constructor(private http: HttpClient, private gs: GameStateService) {}
 
   submitRating(rating: number): Observable<any> {
     return this.http.post('/api/rating', { rating });
   }
 
-  getTaskDetails(taskId: number, studentID: string): Observable<[Task, Solution, GameField]> {
+  getTaskDetails(id_task: number, student_login: string): Observable<[Task, GameField]> {
     return forkJoin([
-      this.getTask(taskId),
-      this.getSolution(taskId, studentID)
+      this.getTask(id_task)
     ]).pipe(
-      switchMap(([task, solution]) => {
-        return this.gs.getGameField(task.gameFieldID).pipe(
-          map(gameField => [task, solution, gameField] as [Task, Solution, GameField])
+      switchMap(([task]) => {
+        return this.gs.getGameField(task.id_game_field).pipe(
+          map(gameField => [task, gameField] as [Task, GameField])
         );
       })
     );
   }
 
-  getTask(taskId: number): Observable<Task> {
-    const params = new HttpParams().set('taskId', taskId.toString());
-    return this.http.get<Task>('/api/task', { params });
+  getTask(id_task: number): Observable<Task> {
+    return this.http.get<Task>(`${this.apiUrl}/tasks/${id_task}`);
   }
   
-  getSolution(taskId: number, studentID: string): Observable<Solution> {
-    const params = new HttpParams()
-      .set('taskId', taskId.toString())
-      .set('studentID', studentID);
-    return this.http.get<Solution>('/api/solution', { params });
+  getSolution(taskId: number, studentId: string): Observable<Solution> {
+    return this.http.get<Solution>(`${this.apiUrl}/solutions/${studentId}/${taskId}`);
   }
 
-  submitSolution(studentId: string, taskId: number, solution: string): Observable<any> {
-    const submission = {
-      studentId,
-      taskId,
-      solution
+  submitSolution(studentId: string, taskId: number, solution: string): Observable<Solution> {
+    const submission: Solution = {
+      student_login: studentId,
+      id_task: taskId,
+      algorithm: solution
     };
 
-    return this.http.post('/api/evaluation', submission);
+    return this.http.post<Solution>(`${this.apiUrl}/solutions/${studentId}/${taskId}`, submission);
   }
 }

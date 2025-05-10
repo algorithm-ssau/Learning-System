@@ -6,7 +6,7 @@ from ..auth import require_teacher
 
 router = APIRouter(prefix="/gamefields", tags=["gamefields"])
 
-@router.get("/gamefields/{game_field_id}", response_model=schemas.GameFieldResponse)
+@router.get("/{game_field_id}", response_model=schemas.GameFieldResponse)
 def get_game_field(game_field_id: int, db: Session = Depends(get_db)):
     game_field = db.query(models.GameField).filter(models.GameField.id_game_field == game_field_id).first()
     if not game_field:

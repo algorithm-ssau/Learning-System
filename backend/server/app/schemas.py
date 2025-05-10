@@ -15,7 +15,7 @@ class StudentBase(BaseModel):
 
 
 class GameFieldBase(BaseModel):
-    length: int
+    height: int
     width: int
     layout_array: str
     energy: int
@@ -31,7 +31,7 @@ class GameFieldResponse(GameFieldBase):
 
 class GameFieldResponse(BaseModel):
     id_game_field: int
-    length: int
+    height: int
     width: int
     layout_array: str
     energy: int
@@ -104,8 +104,21 @@ class JournalResponse(BaseModel):
     class Config:
         orm_mode = True
 
+class SolutionBase(BaseModel):
+    student_login: str
+    id_task: int
+    algorithm: str
+
+    class Config:
+        orm_mode = True
+
+class SolutionCreate(SolutionBase):
+    pass
+
+class SolutionSubmission(BaseModel):
+    submission: SolutionBase
+
 class SolutionResponse(BaseModel):
-    id_solution: str
     algorithm: Optional[str] = None
     student_login: str
     id_task: int
