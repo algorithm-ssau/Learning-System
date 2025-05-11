@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { EvaluationService } from 'src/services/evaluation.service';
 import { Router } from '@angular/router';
 import { GameElement, GameStateService } from 'src/services/game-state.service';
 import { SimulationService } from 'src/services/simulation.service';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-task-view',
@@ -20,7 +21,8 @@ export class TaskViewComponent implements OnInit{
   parsedAlgorithm: string = '';
   width = 10;
   height = 10;
-  gameGrid: number[] = Array(this.width * this.height).fill(0);
+  initialGameField: number[] = [];
+  gameField$ = this.gs.gameField$;
   executionLogs: string[] = [];
   isRunning = false;
   
@@ -35,7 +37,9 @@ export class TaskViewComponent implements OnInit{
     private evaluationService: EvaluationService,
     private gs: GameStateService,
     private ss: SimulationService,
-    private router: Router) {
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {
       this.algorithmForm = this.fb.group({
         commands: this.fb.array([])
       });
@@ -52,10 +56,17 @@ export class TaskViewComponent implements OnInit{
       this.taskText = taskTextMap[goal];
       this.width = task[1].width;
       this.height = task[1].height;
-      this.gameGrid = [... task[1].layout_array];
       this.commandLimit = task[1].energy;
+      this.initialGameField = [...task[1].layout_array];
       if (task[1].id_game_field) this.fieldID = task[1].id_game_field;
     });
+    this.gameField$.pipe(
+      tap(() => {
+        this.cdr.markForCheck(); // Принудительное обновление
+        console.log('Поле обновлено в UI');
+      })
+    ).subscribe();
+
     this.evaluationService.getSolution(this.taskID, this.studentID).subscribe(solution => {
       this.parsedAlgorithm = solution.algorithm;
       console.log(this.parsedAlgorithm);
@@ -205,8 +216,10 @@ export class TaskViewComponent implements OnInit{
 
   get gridStyle() {
     return {
+      display: 'grid',
       'grid-template-columns': `repeat(${this.width}, 60px)`,
-      'grid-template-rows': `repeat(${this.height}, 60px)`
+      'grid-template-rows': `repeat(${this.height}, 60px)`,
+      gap: '2px'
     };
   }
 
@@ -227,14 +240,22 @@ export class TaskViewComponent implements OnInit{
     this.executionLogs = [];
     this.isRunning = true;
   
-    const { done$, log$ } = this.ss.simulateFromString(this.parsedAlgorithm, 500, this.fieldID);
-  
-    // Подписка на поток логов
-    log$.subscribe((msg: string) => {
-      this.executionLogs.push(msg);
+    // Сброс поля
+    this.gs.setGameField({
+      layout_array: [...this.initialGameField],
+      width: this.width,
+      height: this.height,
+      id_game_field: this.fieldID,
+      energy: this.commandLimit
     });
   
-    // Подписка на завершение
+    const code = this.parsedAlgorithm;
+    const { done$, log$ } = this.ss.simulateFromString(code, 1000, this.fieldID);
+  
+    this.executionLogs.push('▶ Запуск алгоритма...');
+  
+    // ✅ Подписка на лог и завершение
+    log$.subscribe((msg: string) => this.executionLogs.push(msg));
     done$.subscribe({
       complete: () => {
         this.executionLogs.push('✅ Алгоритм успешно выполнен');
@@ -245,7 +266,6 @@ export class TaskViewComponent implements OnInit{
         this.isRunning = false;
       }
     });
-    console.log("Я работаю!");
   }
 
   stopSolution(): void {

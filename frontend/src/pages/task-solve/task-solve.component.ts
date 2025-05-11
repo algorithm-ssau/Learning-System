@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { EvaluationService } from 'src/services/evaluation.service';
 import { Router } from '@angular/router';
-import { GameElement, GameStateService } from 'src/services/game-state.service';
+import { GameElement, GameField, GameStateService } from 'src/services/game-state.service';
 import { SimulationService } from 'src/services/simulation.service';
+import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 
 @Component({
   selector: 'app-task-solve',
@@ -26,7 +27,7 @@ export class TaskSolveComponent implements OnInit{
   width = 10;
   height = 10;
   initialGameField: number[] = [];
-  gameField: number[] = [];
+  gameField$ = this.gs.gameField$;
   isRunning = false;
 
   commandsList = [
@@ -42,7 +43,8 @@ export class TaskSolveComponent implements OnInit{
     private evaluationService: EvaluationService,
     private gs: GameStateService,
     private router: Router,
-    private ss: SimulationService
+    private ss: SimulationService,
+    private cdr: ChangeDetectorRef
   ) {
     this.algorithmForm = this.fb.group({
       commands: this.fb.array([])
@@ -64,10 +66,17 @@ export class TaskSolveComponent implements OnInit{
       console.log(this.taskDescription);
       this.width = task[1].width;
       this.height = task[1].height;
-      this.gameField = [... task[1].layout_array];
-      this.initialGameField = [... task[1].layout_array];
+      this.maxCommands = task[1].energy;
+      this.initialGameField = [...task[1].layout_array];
       if (task[1].id_game_field) this.fieldID = task[1].id_game_field;
     });
+    this.gameField$.pipe(
+      tap(() => {
+        this.cdr.markForCheck(); // Принудительное обновление
+        console.log('Поле обновлено в UI');
+      })
+    ).subscribe();
+    this.gs.getGameField().pipe();
   }
 
   get commands(): FormArray {
@@ -223,8 +232,10 @@ export class TaskSolveComponent implements OnInit{
 
   get gridStyle() {
     return {
+      display: 'grid',
       'grid-template-columns': `repeat(${this.width}, 60px)`,
-      'grid-template-rows': `repeat(${this.height}, 60px)`
+      'grid-template-rows': `repeat(${this.height}, 60px)`,
+      gap: '2px'
     };
   }
 
@@ -291,14 +302,22 @@ export class TaskSolveComponent implements OnInit{
     this.consoleMessages = [];
     this.isRunning = true;
   
-    const { done$, log$ } = this.ss.simulateFromString(this.convertAlgorithmToString(), 1000, this.fieldID);
-  
-    // Подписка на поток логов
-    log$.subscribe((msg: string) => {
-      this.consoleMessages.push(msg);
+    // Сброс поля
+    this.gs.setGameField({
+      layout_array: [...this.initialGameField],
+      width: this.width,
+      height: this.height,
+      id_game_field: this.fieldID,
+      energy: this.maxCommands
     });
   
-    // Подписка на завершение
+    const code = this.convertAlgorithmToString();
+    const { done$, log$ } = this.ss.simulateFromString(code, 1000, this.fieldID);
+  
+    this.consoleMessages.push('▶ Запуск алгоритма...');
+  
+    // ✅ Подписка на лог и завершение
+    log$.subscribe((msg: string) => this.consoleMessages.push(msg));
     done$.subscribe({
       complete: () => {
         this.consoleMessages.push('✅ Алгоритм успешно выполнен');
@@ -309,7 +328,6 @@ export class TaskSolveComponent implements OnInit{
         this.isRunning = false;
       }
     });
-    console.log("Я работаю!");
   }
 
   stopSolution(): void {

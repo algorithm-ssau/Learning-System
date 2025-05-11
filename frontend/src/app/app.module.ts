@@ -38,7 +38,7 @@ import { SystemInfoTeacherComponent } from '../pages/system-info-teacher/system-
 
 
 const roots: Routes = [
-  {path: '', component: AuthorizationComponent}, // Заменить авторизацией
+  {path: '', component: AuthorizationComponent},
   {path: 'editor', component: FieldEditorComponent},
   {path: 'view', component: TaskViewComponent},
   {path: 'solve', component: TaskSolveComponent},
@@ -47,9 +47,8 @@ const roots: Routes = [
   {path: 'developerinfo', component: DeveloperInfoComponent},
   {path: 'systeminfo', component: SystemInfoComponent},
   {path: 'systeminfoteacher', component: SystemInfoTeacherComponent},
-  {path: 'notfounderror', component: NotFoundErrorComponent},
   {path: 'rating', component: RatingComponent},
-  {path: '**', component: AppComponent},
+  {path: '**', component: NotFoundErrorComponent},
 ]
 
 @NgModule({
@@ -90,6 +89,8 @@ const roots: Routes = [
   ],
   providers: [
     GameStateService,
+    EvaluationService,
+    SimulationService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [
