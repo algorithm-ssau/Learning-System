@@ -1,6 +1,6 @@
 import { HttpParams, HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable, of, shareReplay } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, shareReplay, switchMap } from 'rxjs';
 import { Task } from './evaluation.service';
 
 export interface GameField {
@@ -33,6 +33,7 @@ export interface TaskData {
 
 export class GameStateService {
   private gfSubject: BehaviorSubject<GameField>; // Храним состояние поля через BehaviorSubject
+  public gameField$: Observable<GameField>;
   private elementImages: Record<number, string> = {
     0: 'assets/empty.png',
     1: 'assets/rock.png',
@@ -67,6 +68,7 @@ export class GameStateService {
       };
     
       this.gfSubject = new BehaviorSubject<GameField>(initialField);
+      this.gameField$ = this.gfSubject.asObservable();
       this.updateGameElements(10, 10, 3, 1, 1);
   }
 
@@ -85,24 +87,24 @@ export class GameStateService {
     if (gameFieldID !== undefined) {
       return this.http.get<GameField>(`${this.apiUrl}/gamefields/${gameFieldID}`).pipe(
         map((field) => {
-          console.log(field);
           const parsedField: GameField = {
             ...field,
             layout_array: JSON.parse(field.layout_array as unknown as string),
           };
-          this.gfSubject.next(parsedField);
+          this.setGameField(parsedField);
           return parsedField;
         }),
         shareReplay(1)
       );
     }
-  
-    // Если ID не указан — возвращаем сохранённое локально
-    return this.gfSubject.asObservable();
+
+    return this.gameField$;
   }
 
   setGameField(field: GameField): void {
-    this.gfSubject.next({ ...field });
+    // Гарантированное создание нового объекта
+    console.log('Обновление поля:', field.layout_array);
+    this.gfSubject.next(field);
   }
 
   setTaskType(type: string) {
@@ -236,5 +238,11 @@ export class GameStateService {
     };
     console.log('Отправка задания:', newTask);
     return this.http.post<Task>(`${this.apiUrl}/tasks`, newTask);
+  }
+
+  deleteTask(fieldID: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/tasks/${fieldID}`).pipe(
+      switchMap(() => this.http.delete<void>(`${this.apiUrl}/gamefields/${fieldID}`))
+    );
   }
 }
