@@ -40,3 +40,12 @@ def create_task(task: schemas.TaskCreate, db: Session = Depends(get_db), _=Depen
     db.commit()
     db.refresh(db_task)
     return db_task
+
+@router.delete('/{task_id}', status_code=204)
+def delete_task(task_id: int, db: Session = Depends(get_db)):
+    task = db.query(models.Task).filter(models.Task.id_task == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail='Задание не найдено')
+
+    db.delete(task)
+    db.commit()

@@ -26,7 +26,7 @@
                     </div>
                 </div>
                 <!-- Кнопка "Удалить задание" -->
-                <button *ngIf="!fieldID" type="button" class="delete-button" (click)="deleteTask()">
+                <button *ngIf="!fieldID" type="button" class="delete-button" (click)="deleteTask(fieldID!)">
                     Удалить задание
                 </button>
             </div>

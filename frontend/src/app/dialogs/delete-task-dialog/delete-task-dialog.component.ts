@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { GameStateService } from 'src/services/game-state.service';
 
 @Component({
   selector: 'app-delete-task-dialog',
@@ -10,13 +11,12 @@ import { Router } from '@angular/router';
 export class DeleteTaskDialogComponent {
   isModalOpen: boolean = false;  // Статус модального окна
 
-  constructor(private dialogRef: MatDialogRef<DeleteTaskDialogComponent>,
-  private router: Router,
+  constructor(
+    private dialogRef: MatDialogRef<DeleteTaskDialogComponent>,
+    private router: Router,
+    private gs: GameStateService,
+    @Inject(MAT_DIALOG_DATA) public data: {fieldID: number}
   ) {}
-
-  onCancel(): void {
-    this.dialogRef.close();
-  }
 
   // Закрытие модального окна
   closeModal(): void {
@@ -26,9 +26,15 @@ export class DeleteTaskDialogComponent {
   // Действие при подтверждении удаления
   confirmDelete(): void {
     // Логика для удаления задания
-    console.log('Задание удалено');
-    this.dialogRef.close()
-    // Переход на страницу /teacherjournal
-    this.router.navigate(['/teacherjournal']);
+    this.gs.deleteTask(this.data.fieldID).subscribe({
+      next: () => {
+        console.log('Задание удалено');
+        this.dialogRef.close();
+        this.router.navigate(['/teacherjournal']);
+      },
+      error: (err) => {
+        console.error('Ошибка при удалении:', err);
+      }
+    });
   }
 }

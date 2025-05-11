@@ -12,7 +12,7 @@ import { DialogService } from 'src/services/dialog.service';
 })
 export class FieldEditorComponent implements OnInit{
 
-  fieldID?: number; // По умолчанию считаем, что создаём новое задание
+  fieldID?: number = undefined; // По умолчанию считаем, что создаём новое задание
   editorForm: FormGroup;
   width: number = 10;
   height: number = 10;
@@ -63,8 +63,9 @@ export class FieldEditorComponent implements OnInit{
     });
   }
 
-  deleteTask(){
-    this.dialogService.openDeleteTaskDialog();
+  deleteTask(fieldID?: number){
+    if (fieldID === undefined) return;
+    this.dialogService.openDeleteTaskDialog(fieldID);
   }
 
   private updateElementCountsFromField(): void {

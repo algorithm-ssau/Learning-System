@@ -10,60 +10,61 @@ import { DeleteTaskDialogComponent } from '../app/dialogs/delete-task-dialog/del
     providedIn: 'root'
 })
 export class DialogService {
-    constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog) {}
 
-    openAddStudentDialog() {
-        return this.dialog.open(AddStudentDialogComponent, {
-          hasBackdrop: true,
-          disableClose: false,
-          autoFocus: false,
-          backdropClass: 'dialog-backdrop',
-          panelClass: 'centered-dialog',
-        });
-      }
+  openAddStudentDialog() {
+    return this.dialog.open(AddStudentDialogComponent, {
+      hasBackdrop: true,
+      disableClose: false,
+      autoFocus: false,
+      backdropClass: 'dialog-backdrop',
+      panelClass: 'centered-dialog',
+    });
+  }
 
-    openGiveTaskDialog(data: any): MatDialogRef<GiveTaskDialogComponent> {
-        return this.dialog.open(GiveTaskDialogComponent, {
-            data: data,
-            width: '500px',
-            hasBackdrop: true,
-            disableClose: false,
-            autoFocus: false,
-            backdropClass: 'dialog-backdrop',
-            panelClass: 'centered-dialog',
-          });
-    }
+  openGiveTaskDialog(data: any): MatDialogRef<GiveTaskDialogComponent> {
+    return this.dialog.open(GiveTaskDialogComponent, {
+      data: data,
+      width: '500px',
+      hasBackdrop: true,
+      disableClose: false,
+      autoFocus: false,
+      backdropClass: 'dialog-backdrop',
+      panelClass: 'centered-dialog',
+    });
+  }
 
-    openAddTaskDialog() {
-      const dialogRef = this.dialog.open(AddTaskDialogComponent, {
-        hasBackdrop: true,
-        disableClose: false,
-        autoFocus: false,
-        backdropClass: 'dialog-backdrop',
-        panelClass: 'centered-dialog',
-      });
-      return dialogRef.afterClosed();
-    }
+  openAddTaskDialog() {
+    const dialogRef = this.dialog.open(AddTaskDialogComponent, {
+      hasBackdrop: true,
+      disableClose: false,
+      autoFocus: false,
+      backdropClass: 'dialog-backdrop',
+      panelClass: 'centered-dialog',
+    });
+    return dialogRef.afterClosed();
+  }
 
-    openDeleteTaskDialog() {
-        return this.dialog.open(DeleteTaskDialogComponent, {
-            hasBackdrop: true,
-            disableClose: false,
-            autoFocus: false,
-            backdropClass: 'dialog-backdrop',
-            panelClass: 'centered-dialog',
-          });
-    }
+  openDeleteTaskDialog(fieldID: number) {
+    return this.dialog.open(DeleteTaskDialogComponent, {
+      data: fieldID,
+      hasBackdrop: true,
+      disableClose: false,
+      autoFocus: false,
+      backdropClass: 'dialog-backdrop',
+      panelClass: 'centered-dialog',
+    });
+  }
 
-    openViewTaskDialog(data: any): MatDialogRef<ViewTasksDialogComponent> {
-        return this.dialog.open(ViewTasksDialogComponent, {
-            data: data,
-            width: '80vw',
-            hasBackdrop: true,
-            disableClose: false,
-            autoFocus: false,
-            backdropClass: 'dialog-backdrop',
-            panelClass: 'centered-dialog',
-          });
-    }
+  openViewTaskDialog(data: any): MatDialogRef<ViewTasksDialogComponent> {
+    return this.dialog.open(ViewTasksDialogComponent, {
+      data: data,
+      width: '80vw',
+      hasBackdrop: true,
+      disableClose: false,
+      autoFocus: false,
+      backdropClass: 'dialog-backdrop',
+      panelClass: 'centered-dialog',
+    });
+  }
 }
