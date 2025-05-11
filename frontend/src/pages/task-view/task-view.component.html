@@ -45,9 +45,18 @@
     <h3>Игровое поле</h3>
     <!-- Игровое поле -->
     <div class="grid-container" [ngStyle]="gridStyle">
-      <div class="grid" *ngFor="let cell of gameGrid; let i = index">
-        <img *ngIf="cell !== -1" class="field-img" [src]="getElementImage(cell)" [ngStyle]="getElementStyle()" />
-      </div>
+      <!-- Используйте async пайп с проверкой на существование поля -->
+      <ng-container *ngIf="gameField$ | async as gameField; else loading">
+        <div class="grid" *ngFor="let cell of gameField.layout_array; let i = index">
+          <img *ngIf="cell !== -1"
+               class="field-img"
+               [src]="getElementImage(cell)"
+               [ngStyle]="getElementStyle()" />
+        </div>
+      </ng-container>
+      <ng-template #loading>
+        <div>Загрузка поля...</div>
+      </ng-template>
     </div>
 
     <h3>Консоль</h3>
