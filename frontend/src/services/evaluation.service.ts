@@ -32,13 +32,16 @@ export class EvaluationService {
 
   constructor(private http: HttpClient, private gs: GameStateService) {}
 
-  submitRating(studentID: string, taskID: number, rating: number): Observable<LogJournal> {
+  submitRating(studentID: string, taskID: number, rating: number): Observable<any> {
     const submission: LogJournal = {
       mark: rating,
       student_login: studentID,
       id_task: taskID
     };
-    return this.http.post<LogJournal>(`${this.apiUrl}/journal/${studentID}/${taskID}/${rating}`, submission);
+
+    return this.http.post<LogJournal>(`${this.apiUrl}/journal/${studentID}/${taskID}/${rating}`, submission).pipe(
+      switchMap(() => this.http.delete(`${this.apiUrl}/solutions/${studentID}/${taskID}`))
+    );
   }
 
   getTaskDetails(id_task: number, student_login: string): Observable<[Task, GameField]> {
@@ -56,7 +59,7 @@ export class EvaluationService {
   getTask(id_task: number): Observable<Task> {
     return this.http.get<Task>(`${this.apiUrl}/tasks/${id_task}`);
   }
-  
+
   getSolution(taskId: number, studentId: string): Observable<Solution> {
     return this.http.get<Solution>(`${this.apiUrl}/solutions/${studentId}/${taskId}`);
   }

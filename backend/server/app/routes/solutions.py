@@ -42,3 +42,21 @@ def submit_solution(
     db.commit()
     db.refresh(db_solution)
     return db_solution
+
+@router.delete("/{student_login}/{task_id}", status_code=204)
+def delete_solution(
+    student_login: str,
+    task_id: int,
+    db: Session = Depends(get_db)
+):
+    solution = db.query(models.Solution).filter_by(
+        student_login=student_login,
+        id_task=task_id
+    ).first()
+
+    if not solution:
+        raise HTTPException(status_code=404, detail="Решение не найдено")
+
+    db.delete(solution)
+    db.commit()
+    return None  # 204 No Content
