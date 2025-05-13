@@ -34,6 +34,12 @@
                         [class.grade-4]="taskControl.value.taskMark === 4"
                         [class.grade-5]="taskControl.value.taskMark === 5">
                         {{ taskControl.value.taskMark > 1 ? taskControl.value.taskMark : '' }}
+                        <button 
+                            *ngIf="taskControl.value.taskMark === -1" 
+                            class="check-button" 
+                            (click)="SolveTask(studentLogin, taskControl.value.idTask)">
+                            —
+                        </button>
                       </div>
                     </div>
                 </div>

@@ -52,7 +52,12 @@ export class TaskSolveComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    
+    this.evaluationService.getCurrentEvaluation().subscribe(evaluation => {
+      if (evaluation){
+        this.studentID = evaluation.student_login;
+        this.taskID = evaluation.id_task;
+      }
+    });
     this.evaluationService.getTaskDetails(this.taskID, this.studentID).subscribe(task => {
       console.log(task);
       const goal = task[0].id_goal;

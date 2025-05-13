@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { catchError, lastValueFrom, of, timeout } from 'rxjs';
 import { ApiService } from 'src/services/api.service';
 import { AuthService } from 'src/services/auth.service';
+import { EvaluationService } from 'src/services/evaluation.service';
 
 @Component({
   selector: 'app-student-journal',
@@ -23,6 +24,7 @@ export class StudentJournalComponent {
     private router: Router,
     private apiService: ApiService,
     private authService: AuthService,
+    private es: EvaluationService
   ) {
     this.ratingsForm = this.fb.group({
       ratings: this.fb.array([])
@@ -171,6 +173,11 @@ export class StudentJournalComponent {
     this.ratings.push(this.fb.control(studentData[5]));
     this.ratings.push(this.fb.control(studentData[4]));
     console.log(this.ratingsForm);
+  }
+
+  SolveTask(student_login: string, id_task: number) {
+    this.es.setCurrentEvaluation(student_login, id_task);
+    this.router.navigate(['/solve']);
   }
 
   goToRating(): void {
