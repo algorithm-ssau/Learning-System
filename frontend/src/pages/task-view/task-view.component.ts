@@ -4,7 +4,7 @@ import { EvaluationService } from 'src/services/evaluation.service';
 import { Router } from '@angular/router';
 import { GameElement, GameStateService } from 'src/services/game-state.service';
 import { SimulationService } from 'src/services/simulation.service';
-import { tap } from 'rxjs';
+import { take, tap } from 'rxjs';
 
 @Component({
   selector: 'app-task-view',
@@ -46,6 +46,13 @@ export class TaskViewComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    this.evaluationService.getCurrentEvaluation().subscribe(evaluation => {
+      if (evaluation){
+        this.studentID = evaluation.student_login;
+        this.taskID = evaluation.id_task;
+      }
+    });
+    console.log(this.studentID, this.taskID);
     this.evaluationService.getTaskDetails(this.taskID, this.studentID).subscribe(task => {
       const goal = task[0].id_goal;
       const taskTextMap: Record<number, string> = {

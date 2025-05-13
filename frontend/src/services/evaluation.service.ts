@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { forkJoin, map, Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, forkJoin, map, Observable, switchMap } from 'rxjs';
 import { GameField } from './game-state.service';
 import { GameStateService } from './game-state.service';
 
@@ -23,14 +23,43 @@ export interface LogJournal {
   id_task: number
 }
 
+export interface EvaluationParams {
+  student_login: string,
+  id_task: number
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class EvaluationService {
 
-  private apiUrl = 'http://localhost:8000'
+  private apiUrl = 'http://localhost:8000';
 
-  constructor(private http: HttpClient, private gs: GameStateService) {}
+  private currentEvaluationSubject: BehaviorSubject<EvaluationParams>;
+  private currentEvaluation$: Observable<EvaluationParams>;
+
+
+  constructor(private http: HttpClient, private gs: GameStateService) {
+    const inital: EvaluationParams = {
+      student_login: 'student10A1',
+      id_task: 1
+    }
+    this.currentEvaluationSubject = new BehaviorSubject<EvaluationParams>(inital);
+    this.currentEvaluation$ = this.currentEvaluationSubject.asObservable();
+  }
+
+  setCurrentEvaluation(student_login: string, id_task: number) {
+    const params: EvaluationParams = {
+      student_login: student_login,
+      id_task: id_task
+    };
+    this.currentEvaluationSubject.next(params);
+    console.log(this.currentEvaluation$);
+  }
+  
+  getCurrentEvaluation() {
+    return this.currentEvaluation$;
+  }
 
   submitRating(studentID: string, taskID: number, rating: number): Observable<any> {
     const submission: LogJournal = {

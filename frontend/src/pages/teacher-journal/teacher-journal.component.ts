@@ -7,6 +7,7 @@ import { catchError, lastValueFrom, of, timeout } from 'rxjs';
 import { Journal } from 'src/app/models/model';
 import { AuthService } from 'src/services/auth.service';
 import { GameStateService } from 'src/services/game-state.service';
+import { EvaluationService } from 'src/services/evaluation.service';
 
 @Component({
   selector: 'app-teacher-journal',
@@ -28,7 +29,8 @@ export class TeacherJournalComponent implements OnInit{
     private router: Router,
     private dialogService: DialogService,
     private apiService: ApiService,
-    private gs: GameStateService
+    private gs: GameStateService,
+    private es: EvaluationService
     ) {
     this.classesForm = this.fb.group({
       classes: this.fb.array([])
@@ -151,6 +153,11 @@ export class TeacherJournalComponent implements OnInit{
     } else {
       console.log('Form is invalid');
     }
+  }
+
+  checkTask(student_login: string, id_task: number) {
+    this.es.setCurrentEvaluation(student_login, id_task);
+    this.router.navigate(['/view']);
   }
 
   openAddStudent() {
