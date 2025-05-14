@@ -142,6 +142,10 @@
     content: "▶";
 }
 
+.task-grade.grade-1 {
+    background-color: #ffebee;
+    color: #c62828;
+}
 .task-grade.grade-2 {
     background-color: #ffebee;
     color: #c62828;

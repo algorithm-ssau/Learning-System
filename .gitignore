@@ -1,4 +1,4 @@
 docker-compose.yml
 __pycache__/
 *.pyc
-.env
+backend/server/.env

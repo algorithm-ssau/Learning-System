@@ -4,7 +4,7 @@ import { EvaluationService } from 'src/services/evaluation.service';
 import { Router } from '@angular/router';
 import { GameElement, GameStateService } from 'src/services/game-state.service';
 import { SimulationService } from 'src/services/simulation.service';
-import { take, tap } from 'rxjs';
+import { switchMap, take, tap } from 'rxjs';
 
 @Component({
   selector: 'app-task-view',
@@ -207,13 +207,23 @@ export class TaskViewComponent implements OnInit{
   }
 
   submitRating(): void {
-    const rating = this.ratingForm.value.selectedRating ?? 1; // Устанавливаем значение по умолчанию
+    const rating = this.ratingForm.value.selectedRating ?? 1;
+  
     if (rating < 1 || rating > 5) {
       alert('Выберите корректную оценку!');
       return;
     }
-    this.evaluationService.submitRating(this.studentID, this.taskID, rating).subscribe(() => {
-      this.router.navigate(['/teacherjournal']);
+  
+    this.evaluationService.deleteSolution(this.studentID, this.taskID).pipe(
+      switchMap(() =>
+        this.evaluationService.submitRating(this.studentID, this.taskID, rating)
+      )
+    ).subscribe({
+      next: () => this.router.navigate(['/teacherjournal']),
+      error: (err) => {
+        console.error('Ошибка при выставлении оценки:', err);
+        alert('Произошла ошибка при сохранении оценки');
+      }
     });
   }
 
