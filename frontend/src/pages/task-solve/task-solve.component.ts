@@ -4,7 +4,7 @@ import { EvaluationService } from 'src/services/evaluation.service';
 import { Router } from '@angular/router';
 import { GameElement, GameField, GameStateService } from 'src/services/game-state.service';
 import { SimulationService } from 'src/services/simulation.service';
-import { BehaviorSubject, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-task-solve',
@@ -298,9 +298,15 @@ export class TaskSolveComponent implements OnInit{
   submitSolution(): void {
     const solutionString = this.convertAlgorithmToString();
     console.log(this.studentID, this.taskID, solutionString);
-    
-    this.evaluationService.submitSolution(this.studentID, this.taskID, solutionString)
-      .subscribe(() => this.router.navigate(['/studentjournal']));
+  
+    this.evaluationService.submitRating(this.studentID, this.taskID, 0).pipe(
+      switchMap(() =>
+        this.evaluationService.submitSolution(this.studentID, this.taskID, solutionString)
+      )
+    ).subscribe({
+      next: () => this.router.navigate(['/studentjournal']),
+      error: (err) => console.error('Ошибка при отправке решения:', err)
+    });
   }
 
   runSolution(): void {

@@ -55,11 +55,12 @@
                 <div class="task-grade" 
                   [class.unsolved]="taskControl.value.taskMark === -1"
                   [class.solved]="taskControl.value.taskMark === 0"
+                  [class.grade-1]="taskControl.value.taskMark === 1"
                   [class.grade-2]="taskControl.value.taskMark === 2"
                   [class.grade-3]="taskControl.value.taskMark === 3"
                   [class.grade-4]="taskControl.value.taskMark === 4"
                   [class.grade-5]="taskControl.value.taskMark === 5">
-                  {{ taskControl.value.taskMark > 1 ? taskControl.value.taskMark : '' }}
+                  {{ taskControl.value.taskMark > 0 ? taskControl.value.taskMark : '' }}
 
                   <!-- КНОПКА ПРОВЕРКИ: Показывается только если оценка == 0 -->
                   <button 

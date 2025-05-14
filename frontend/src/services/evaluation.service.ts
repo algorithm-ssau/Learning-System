@@ -61,16 +61,18 @@ export class EvaluationService {
     return this.currentEvaluation$;
   }
 
-  submitRating(studentID: string, taskID: number, rating: number): Observable<any> {
+  submitRating(studentID: string, taskID: number, rating: number): Observable<LogJournal> {
     const submission: LogJournal = {
       mark: rating,
       student_login: studentID,
       id_task: taskID
     };
 
-    return this.http.post<LogJournal>(`${this.apiUrl}/journal/${studentID}/${taskID}/${rating}`, submission).pipe(
-      switchMap(() => this.http.delete(`${this.apiUrl}/solutions/${studentID}/${taskID}`))
-    );
+    return this.http.post<LogJournal>(`${this.apiUrl}/journal/${studentID}/${taskID}/${rating}`, submission);
+  }
+
+  deleteSolution(studentID: string, taskID: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/solutions/${studentID}/${taskID}`);
   }
 
   getTaskDetails(id_task: number, student_login: string): Observable<[Task, GameField]> {

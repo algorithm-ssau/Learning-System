@@ -58,8 +58,7 @@ def upsert_journal_entry(
     student_login: str,
     task_id: int,
     rating: int,
-    db: Session = Depends(get_db),
-    _ = Depends(require_teacher)
+    db: Session = Depends(get_db)
 ):
     try:
         # Проверка существования студента
