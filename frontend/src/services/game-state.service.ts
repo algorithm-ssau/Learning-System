@@ -2,6 +2,7 @@ import { HttpParams, HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, of, shareReplay, switchMap } from 'rxjs';
 import { Task } from './evaluation.service';
+import { environment } from 'src/environments/environment.prod';
 
 export interface GameField {
   id_game_field?: number;
@@ -46,7 +47,7 @@ export class GameStateService {
 
   private ge: GameElement[] = [];
 
-  private apiUrl = 'http://localhost:8000'
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient){
       const initialField: GameField = {

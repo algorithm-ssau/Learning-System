@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, forkJoin, map, Observable, switchMap } from 'rxjs';
 import { GameField } from './game-state.service';
 import { GameStateService } from './game-state.service';
+import { environment } from 'src/environments/environment.prod';
 
 export interface Task {
   id_task?: number;
@@ -33,7 +34,7 @@ export interface EvaluationParams {
 })
 export class EvaluationService {
 
-  private apiUrl = 'http://localhost:8000';
+  private apiUrl = environment.apiUrl;
 
   private currentEvaluationSubject: BehaviorSubject<EvaluationParams>;
   private currentEvaluation$: Observable<EvaluationParams>;
