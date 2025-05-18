@@ -30,7 +30,20 @@
 ```
 https://github.com/algorithm-ssau/Learning-System.git
 ```
-### 2. Запуск Docker 
+### 2. Настройка переменных сервера (необязательно)
+В файле .env можно заполнить следующие данные:
+```
+DB_USER=student # Логин для ученика (из бд)
+DB_PASSWORD=student_password # Пароль для ученика (из бд)
+DB_HOST-mysql # БД
+DB_NAME=learning_sys_db # Имя БД
+DB_ROOT_PASSWORD=1234 # Пароль в БД для отладки
+
+# Данные для входа учителем (замените при необходимости)
+TEACHER_LOGIN=teacher_login
+TEACHER_PASSWORD=teacher_password
+```
+### 3. Запуск Docker 
 1. Убедитесь, что у Вас установлен [Docker](https://www.docker.com/products/docker-desktop/)
 2. В папке `Learning System` пропишите в консоли:
 ```
