@@ -20,6 +20,9 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
+TEACHER_LOGIN = os.getenv("TEACHER_LOGIN")
+TEACHER_PASSWORD = os.getenv("TEACHER_PASSWORD")
+
 @app.post("/login")
 async def login(
     request: Request,
@@ -30,8 +33,8 @@ async def login(
     username = data.get("username")
     password = data.get("password")
 
-    if username == os.getenv("TEACHER_LOGIN"):
-        if password != os.getenv("TEACHER_PASSWORD"):
+    if username == TEACHER_LOGIN:
+        if password != TEACHER_PASSWORD:
             raise HTTPException(status_code=400, detail="Invalid teacher credentials")
         role = "teacher"
         access_token = create_access_token(username, role)
